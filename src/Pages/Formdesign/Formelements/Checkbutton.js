@@ -12,12 +12,11 @@ import style from "./Checkbutton.module.css";
 
 let i = 0;
 
-const CheckButton = () => {
+const CheckButton = ({ setoptionvalueArray }) => {
   const [checkLabel, setCheckLabel] = useState("");
   const [editcheckLabel, setEditCheckLabel] = useState("");
   const [checkOptions, setCheckOptions] = useState([]);
   const [checkClickedId, setCheckClickedId] = useState();
- 
 
   let isActive = false;
 
@@ -57,6 +56,7 @@ const CheckButton = () => {
   };
 
   useEffect(() => {
+    setoptionvalueArray(checkOptions);
     console.log(checkOptions);
   }, [checkOptions]);
 
