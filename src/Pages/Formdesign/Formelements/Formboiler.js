@@ -13,23 +13,31 @@ import {
 import Radiobuttons from "./Radiobuttons";
 import Checkbutton from './Checkbutton'
 
-const Formboiler = ({ setSelectType, key, isactive,itemid, onClick,handleaddclick,clicked}) => {
+const Formboiler = ({ setSelectType, key, isactive,itemid, onClick,handleaddclick,clicked,data}) => {
   const [selectedValue, setSelectedValue] = useState(0);
   const [qnOptionType, setqnOptionType] = useState(0);
   const [qnValue,setQnValue]=useState();
   const [optionValueArray,setoptionvalueArray]=useState();
+  const [itemidstate,setItemIdstate]=useState();
+  console.log(data,data?.Options)
 
-  console.log("item id in boiler: ",itemid);
+  useEffect(()=>{
+setData()
+  },[])
 
-  // useEffect(()=>{
+  const setData=()=>
+  {if(data){
+    setSelectedValue(data?.Options?.type)
+    setQnValue(data?.Qntext)
+    setoptionvalueArray(data?.Options?.optionarray)
+    setqnOptionType(data?.Options?.type);
+    // setItemId(data.id)
+  }
+  }
+
+
   
-  //   if(clicked)
-  //   console.log("111hello")
-                                                                                        
-  // },[clicked])
   
-  
-  console.log("arrya ",optionValueArray)
   //setIdActive(isActive)
 
   const [radioOption, setRadioOption] = useState([{ value: 1, label: 1 }]);
@@ -58,14 +66,17 @@ const Formboiler = ({ setSelectType, key, isactive,itemid, onClick,handleaddclic
     case(1):
       return(
     <div className={styles.radioBtn}>
-        <Radiobuttons setoptionvalueArray={setoptionvalueArray} />
+        <Radiobuttons setoptionvalueArray={setoptionvalueArray} data={optionValueArray}/>
       </div>)
       // break;
       
       case(2):
         return (
           <div className={styles.checkBtn}>
-            <Checkbutton setoptionvalueArray={setoptionvalueArray} />
+            <Checkbutton
+              setoptionvalueArray={setoptionvalueArray}
+              data = { optionValueArray }
+            />
           </div>
         );
       // break;

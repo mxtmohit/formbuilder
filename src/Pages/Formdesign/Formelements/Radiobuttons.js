@@ -15,13 +15,21 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 let i = 0;
 
-const Radiobuttons = ({setoptionvalueArray}) => {
+const Radiobuttons = ({setoptionvalueArray,data}) => {
   const [radioLabel, setRadioLabel] = useState("");
   const [editradioLabel, setEditRadioLabel] = useState("");
   const [radioOptions, setRadioOptions] = useState([]);
   const [radioClickedId, setRadioClickedId] = useState();
 
   let isActive = false;
+  useEffect(()=>{setData()},[])
+
+ const setData=()=>{
+  
+  if(data)
+    setRadioOptions(data)
+ }  
+
 
   const HandleDeleteOption=(id)=>{
     // setoptionvalueArray(radioOptions)

@@ -6,9 +6,25 @@ let i = 0;
 const Formpage = () => {
   const [selectedtype, setSelectType] = useState(0);
   const [qnArray, setQnArray] = useState({});
-  const [qnArraymain, setQnArraymain] = useState([{}]);
+  const [qnArraymain, setQnArraymain] = useState(JSON.parse(localStorage.getItem("mainarray")) ?? [{}])
   const [clicked, setclicked] = useState(0);
   const [itemId, setItemId] = useState(0);
+  const [localStorageData, setLocalStorageData] = useState();
+  const [loadedcomp,setloadedcomp]=useState()
+
+  console.log("local", localStorageData);
+
+  // useEffect(() => {
+    
+  //     setLocalStorageData(JSON.parse(localStorage.getItem("mainarray")) ?? "");
+  //   }
+  // , []);
+
+  useEffect(() => {
+    if (qnArraymain)
+      localStorage.setItem("mainarray", JSON.stringify(qnArraymain));
+  }, [qnArraymain]);
+
   //  console.log("qn : ", qnArray);
 
   let updatedcomps;
@@ -25,38 +41,33 @@ const Formpage = () => {
     //   setQnArraymain((prev)=>[...prev, qnArray]);
     // }
 
-    updatedcomps = qnArraymain.map((item) => {
+    updatedcomps = qnArraymain.map((item,idx) => {
       // if(qnArraymain.length>0){
       console.log(qnArray, " || ", item);
-      if (item?.itemid == qnArray.itemid) 
-      {
+      if (idx == qnArray.itemid) {
         flag = false;
         return qnArray;
       }
       return item;
-      // }else
-      //  setQnArraymain(qnArray)
     });
-    setQnArraymain(updatedcomps);
-    if (flag) 
-    {
+    if((JSON.stringify(updatedcomps) !== JSON.stringify(qnArraymain)))
+      setQnArraymain(updatedcomps);
+    if (flag) {
       setQnArraymain((prev) => [...prev, qnArray]);
     }
   };
 
   useEffect(() => {
     console.log("usefeect worked1");
-    if (qnArray?.Qntext || qnArray?.Qntext=="") {
+    if (qnArray?.Qntext || qnArray?.Qntext == "") {
       console.log("usefeect worked2", qnArray);
       handleaddclickmain();
     }
   }, [qnArray]);
 
+
+
   console.log("main rray : ", qnArraymain);
-
-  //let style="20vh"
-
-  // console.log(selectedtype)
 
   const handleaddclick = (a) => {
     console.log("called", a);
@@ -67,7 +78,9 @@ const Formpage = () => {
   };
 
   const Handlecompclick = (idx) => {
+    
     setCompActiveIndex(idx);
+    console.log("activeindex",compActiveIndex);
   };
 
   console.log("qnArray : ", qnArray);
@@ -76,7 +89,7 @@ const Formpage = () => {
     10: (
       <Formboiler
         clicked={clicked}
-        itemid={clicked}
+        
         handleaddclick={handleaddclick}
         setSelectType={HandlesetSelectType}
       />
@@ -85,6 +98,7 @@ const Formpage = () => {
 
   const [Formelements, setFormelements] = useState([
     {
+      
       component: (
         <Formboiler
           clicked={clicked}
@@ -98,18 +112,23 @@ const Formpage = () => {
 
   const handleFormElements = (k) => {
     // setFormelements([...Formelements, { component: comps[10] }]);
-    console.log(k)
-    setFormelements([...Formelements, { component: (
-      <Formboiler
-        clicked={clicked}
-        itemid={k}
-        handleaddclick={handleaddclick}
-        setSelectType={HandlesetSelectType}
-      />
-    )}]);
-    
+    setQnArraymain([...qnArraymain,{}])
+    console.log(k);
+    setFormelements([
+      ...Formelements,
+      {
+        component: (
+          <Formboiler
+            clicked={clicked}
+            itemid={k}
+            handleaddclick={handleaddclick}
+            setSelectType={HandlesetSelectType}
+          />
+        ),
+      },
+    ]);
 
-    setCompActiveIndex(Formelements.length);
+    setCompActiveIndex(qnArraymain.length);
   };
   const [compActiveIndex, setCompActiveIndex] = useState(0);
   //console.log(Formelements);
@@ -118,20 +137,43 @@ const Formpage = () => {
 
   // useEffect(() => {}, [Formelements],compActiveIndex);
   // console.log(clicked);
+// useEffect(()=>{
+//   if (JSON.parse(localStorage.getItem("mainarray"))) {
+//     setloadedcomp(Formelements.map((item, idx) => {
+//       isactive = idx == compActiveIndex;
+//       return(
+// <Formboiler
+//         clicked={clicked}
+//         itemid={item[0]?.itemid}
+//         data={item[0]}
+//         handleaddclick={handleaddclick}
+//         setSelectType={HandlesetSelectType}
+//         onClick={() => {
+//           Handlecompclick(idx);
+//         }}
+//         isactive={isactive}
+//       />)}
+//     ));
+//   }},[])
+if(qnArraymain.length>10)
+    setQnArraymain([{}])
+  console.log("lod,",loadedcomp);
   return (
     <div className={styles.main}>
       <div className={styles.wrapper}>
-        {Formelements.map((Comp, idx) => {
-          isactive = idx == compActiveIndex;
-          //console.log(isactive)
+        {
+          qnArraymain.map((item, idx) => {
+            isactive = idx == compActiveIndex;
 
-          return React.cloneElement(Comp.component, {
-            onClick: () => {
-              Handlecompclick(idx);
-            },
-            isactive: { isactive },
-          });
-        })}
+            return React.cloneElement(comps[10], {
+              onClick: () => {
+                Handlecompclick(idx);
+              },
+              isactive: {isactive },
+              data:item,
+              itemid:idx
+            });
+          })}
 
         {/* <div className={styles.menuInput}>
           <Select
