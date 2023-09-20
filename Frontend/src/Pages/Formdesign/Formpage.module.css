@@ -1,0 +1,121 @@
+
+
+.main {
+    width: 100%;
+    min-height: 100vh;
+   
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-color: hwb(0 100% 0%);
+    
+    
+    /* padding:5px */
+
+}
+.wrapper{
+   
+
+    min-height: 100vh;
+    max-width: 1000px;
+    width: 1000PX;
+    
+    padding: 10px;
+    /* margin: 10px; */
+    
+    display: flex;
+    flex-direction: column;
+    align-items:center ;
+    background-color: hwb(162 67% 0%);
+    
+    border: 2px solid hwb(0 63% 37%);;
+   
+}
+.BtnContainer{
+    position: sticky;
+        top: 800px;
+        right: 15%;
+        bottom: 0;
+        /* // bottom: 10%; */
+        cursor: pointer;
+        /* width: 40px; */
+        height: 200px;
+        border: 2px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: hwb(162 67% 0%);
+        margin: 10px;
+}
+.addBtn{
+    position: sticky;
+    top:800px;
+    right: 15%;
+    bottom: 0;
+   /* // bottom: 10%; */
+    cursor: pointer;
+    /* width: 40px; */
+    height: 100px;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: hwb(162 67% 0%);
+    margin: 10px;
+    color: rgb(139, 40, 51);
+    border-radius:10px ;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding:4px;
+    text-shadow: 1px;
+}
+
+.submitBtn{
+cursor: pointer;
+    /* width: 40px; */
+    height: 100px;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: hwb(162 67% 0%);
+    margin: 10px;
+    color: rgb(139, 40, 51);
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 4px;
+    text-shadow: 1px;
+
+}    
+
+
+   
+
+.divs{
+    width: 50%;
+    height:50%;
+}
+
+.slide-enter {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+.slide-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform 500ms, opacity 500ms;
+}
+
+/* Exit Animation */
+.slide-exit {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.slide-exit-active {
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 500ms, opacity 500ms;
+}

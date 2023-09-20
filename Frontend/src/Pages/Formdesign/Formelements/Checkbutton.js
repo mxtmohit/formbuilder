@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import style from "./Checkbutton.module.css";
-//import {AddIcon} from "@material-ui/icons";
+import ClearIcon from "@mui/icons-material/Clear";
 
 let i = 0;
 
@@ -17,14 +17,25 @@ const CheckButton = ({ setoptionvalueArray,data }) => {
   const [editcheckLabel, setEditCheckLabel] = useState("");
   const [checkOptions, setCheckOptions] = useState([]);
   const [checkClickedId, setCheckClickedId] = useState();
+  
 
   let isActive = false;
   useEffect(()=>{
     setData()
   },[])
   const setData=()=>{
-    setCheckOptions(data)
+    if(data)
+      setCheckOptions(data)
   }
+
+  const HandleDeleteOption = (id) => {
+    // setoptionvalueArray(radioOptions)
+    setCheckOptions(
+      checkOptions.filter((item) => {
+        return item.id != id;
+      })
+    );
+  }; 
 
   const HandleAddOption = () => {
     if (checkLabel.length != 0) {
@@ -33,10 +44,8 @@ const CheckButton = ({ setoptionvalueArray,data }) => {
         { label: checkLabel, value: checkLabel, id: i },
       ]);
     }
-
     setCheckLabel("");
     isActive = false;
-    // setEditCheckLabel("")
     setCheckClickedId(-1);
   };
   i++;
@@ -71,34 +80,43 @@ const CheckButton = ({ setoptionvalueArray,data }) => {
       {checkOptions.map((item, idx) => {
         isActive = item.id == checkClickedId;
         return (
-          <div
-            className={style.checkContainer}
-            // onClick={() => Handlecheckclick(item)}
-            onMouseEnter={() => {
-              Handlecheckclick(item);
-            }}
-          >
-            <FormControlLabel
-              value={item.label}
-              control={<Checkbox />}
-              label={
-                isActive ? (
-                  <Input
-                    onChange={(e) => setEditCheckLabel(e.target.value)}
-                    onMouseLeave={() => {
-                      HandlesaveEdit(item.id);
-                      isActive = false;
-                    }}
-                    value={editcheckLabel}
-                  />
-                ) : (
-                  item.label
-                )
-              }
-            />
+          <div className={style.radioRow}>
+            <div
+              className={style.checkContainer}
+              // onClick={() => Handlecheckclick(item)}
+              onMouseEnter={() => {
+                Handlecheckclick(item);
+              }}
+            >
+              <FormControlLabel
+                value={item.label}
+                control={<Checkbox />}
+                label={
+                  isActive ? (
+                    <Input
+                      onChange={(e) => setEditCheckLabel(e.target.value)}
+                      onMouseLeave={() => {
+                        HandlesaveEdit(item.id);
+                        isActive = false;
+                      }}
+                      value={editcheckLabel}
+                    />
+                  ) : (
+                    <div className={style.labelText}>{item.label}</div>
+                  )
+                }
+              />
+            </div>
+            <IconButton
+              className={style.rmvicon}
+              onClick={() => HandleDeleteOption(item.id)}
+            >
+              <ClearIcon />
+            </IconButton>
           </div>
         );
-      })}
+      })
+      }
       <div style={{ display: "flex", flexDirection: "row" }}>
         <FormControlLabel
           value="female"
