@@ -20,8 +20,9 @@ const Formboiler = ({ setSelectType, isactive,itemid, onClick,handleaddclick,cli
   const [qnOptionType, setqnOptionType] = useState('0');
   const [qnValue,setQnValue]=useState();
   const [optionValueArray,setoptionvalueArray]=useState();
+  const [optionResponse,setOptionResponse]=useState()
   const [itemidstate,setItemIdstate]=useState(itemid);
-  console.log("itemdid",itemid)
+  console.log("itemdid",data)
 
   useEffect(()=>{
 setData()
@@ -36,6 +37,9 @@ setData()
     setItemIdstate(itemid);
   }
   }
+
+  
+
 
 
 
@@ -67,28 +71,31 @@ setData()
             <TextField
               fullWidth
               id="standard-basic"
-              
               variant="standard"
               value={qnValue}
-              onChange={(e) => setQnValue(e.target.value)}
+              onChange={(e) => setOptionResponse(e.target.value)}
             />
           </div>
         </div>
       );
     }
     case(1):
-      return(
-    <div className={styles.radioBtn}>
-        <Radiobuttons setoptionvalueArray={setoptionvalueArray} data={optionValueArray}/>
-      </div>)
+      return (
+        <div className={styles.radioBtn}>
+          <Radiobuttons
+            setoptionvalueArray={setOptionResponse}
+            data={optionValueArray}
+          />
+        </div>
+      );
       // break;
       
       case(2):
         return (
           <div className={styles.checkBtn}>
             <Checkbutton
-              setoptionvalueArray={setoptionvalueArray}
-              data = { optionValueArray }
+              setoptionvalueArray={setOptionResponse}
+              data={optionValueArray}
             />
           </div>
         );

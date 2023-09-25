@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const {Schema} =require('mongoose')
+// const {Schema} =require('mongoose')
 
 const optionarraySchema = mongoose.Schema({
   label: { type: String },
   value: { type: String },
-  id: { type: Number },
+  id: { type: String },
 });
 
 const optionSchema = mongoose.Schema({

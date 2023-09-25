@@ -1,20 +1,30 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "./UserFormpage.module.css";
 import { MenuItem, Select, TextField } from "@mui/material";
-import Formboiler from "../UserFormElements/Formboiler"
+import Formboiler from "../UserFormElements/Formboiler";
 import TitleBar from "../UserFormElements/TitleBar";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Formpage from "../../Formdesign/Formpage";
+
 
 let i = 0;
 const UserFormpage = () => {
+  const { formid } = useParams();
+  const navigate = useNavigate();
+  const location = window.location.pathname
 
-  const {formid}=useParams()
-  console.log(formid)
+  const path=location?.split('/').slice(0,3).join("/")
 
+  console.log("route",path)
+
+  console.log(formid);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [selectedtype, setSelectType] = useState(0);
   const [titleobj, setTitle] = useState(
-    JSON.parse(localStorage.getItem("maintitle")) ?? {}
+    JSON.parse(localStorage.getItem("usermaintitle")) ?? {}
   );
   const [qnArray, setQnArray] = useState({});
   const [formData, setFormData] = useState({});
@@ -22,7 +32,10 @@ const UserFormpage = () => {
     JSON.parse(localStorage.getItem("usermainarray")) ?? [{ itemid: 0 }]
   );
   const [clicked, setclicked] = useState(0);
-  
+
+  const { email, token } = useSelector((state) => state.userSlice);
+
+  if (!token) navigate(`/auth/${formid}`);
 
   if (JSON.parse(localStorage.getItem("usermainarray")))
     i = JSON.parse(localStorage.getItem("usermainarray"))?.length;
@@ -32,18 +45,14 @@ const UserFormpage = () => {
   let flag = true;
 
   const updateMainArray = (updatedarray) => {
-    setQnArraymain(()=>updatedarray);
-    
+    setQnArraymain(() => updatedarray);
   };
 
-
-useEffect(()=>{
-  setFormData({title:titleobj,qnArraymain:qnArraymain})
-},[qnArraymain,titleobj])
+  useEffect(() => {
+    setFormData({ title: titleobj, qnArraymain: qnArraymain });
+  }, [qnArraymain, titleobj]);
 
   const handleaddclickmain = () => {
-    
-
     updatedcomps = qnArraymain.map((item) => {
       if (item.itemid == qnArray.itemid) {
         flag = false;
@@ -60,14 +69,16 @@ useEffect(()=>{
   };
 
   useEffect(() => {
-    console.log(qnArray?.options?.optionarray)
-    if (qnArray?.Qntext || qnArray?.Qntext == ""||qnArray?.Options?.optionarray) {
+    console.log(qnArray?.options?.optionarray);
+    if (
+      qnArray?.Qntext ||
+      qnArray?.Qntext == "" ||
+      qnArray?.Options?.optionarray
+    ) {
       console.log("usefeect worked2", qnArray);
       handleaddclickmain();
     }
   }, [qnArray]);
-
-  
 
   const handleaddclick = (a) => {
     setQnArray(a);
@@ -77,7 +88,6 @@ useEffect(()=>{
     setSelectType(e);
   };
 
- 
   const comps = {
     10: (
       <Formboiler
@@ -89,17 +99,11 @@ useEffect(()=>{
     ),
   };
 
-  
-
- 
-
-
   useEffect(() => {
-
     if (qnArraymain)
       localStorage.setItem("usermainarray", JSON.stringify(qnArraymain));
     localStorage.setItem("usermaintitle", JSON.stringify(titleobj));
-  }, [qnArraymain,titleobj]);
+  }, [qnArraymain, titleobj]);
 
   const [Formelements, setFormelements] = useState([
     {
@@ -114,75 +118,103 @@ useEffect(()=>{
     },
   ]);
 
-useEffect(()=>{
-  HandleFetchForm()
-},[])
-const HandleFetchForm = async () => {
-  try {
-    const res = await axios.get(`http://localhost:5000/form/${formid}`);
-    console.log(res.data)
-    console.log(res.data.formData);
+  useEffect(() => {
+    HandleFetchForm();
+  }, []);
+  const HandleFetchForm = async () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // You can add other headers here if needed
+      },
+    };
 
-    setFormData(res.data.formData)
+    // try{const axiosInstance = axios.create({
+    //     baseURL: 'https://api.example.com', // Replace with your API base URL
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': `Bearer ${accessToken}`, // Set the Authorization header with "Bearer" and the token
+    //     },
+    //   });
 
-    
+    //   // Make a GET request with the token in the header
+    //   const response = await axiosInstance.get('/api/endpoint');
 
-    const {title,qnData,user}=res.data.formData
-    
-    setTitle(title)
-    setQnArraymain(qnData)
+    //   console.log('Response:', response.data);
+    //   // Handle the response data here
 
-  
+    // } catch (error) {
+    //   console.error('Error:', error);}
 
-    // setFormData(res.)
-  } catch (error) {
-    console.log("coudnt submit my bad");
-    setTitle("");
-    setQnArraymain("");
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/form/${formid}`,
+        config
+      );
+      // console.log(res.data);
+      // console.log("hello",res.data.formData);
 
-  }
-};  
+      setFormData(res.data.formData);
 
-  
+      const { title, qnData} = res.data.formData;
+      setIsAdmin(res.data.isAdmin);
+      setTitle(title);
+      setQnArraymain(qnData);
 
-const HandleFormUpload= async() => {
-  try {
-      const res = await axios.post("http://localhost:5000/form/submit", formData);
-  } catch (error) {
-    console.log("coudnt submit my bad")
-  }
-  
-};
-  
+      // setFormData(res.)
+    } catch (error) {
+      console.log("coudnt submit my bad");
+      navigate("/auth");
+      setTitle({});
+      setQnArraymain([]);
+    }
+  };
+
+  const HandleFormUpload = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/form/submit",
+        formData
+      );
+    } catch (error) {
+      console.log("coudnt submit my bad");
+    }
+  };
 
   return (
-    <div className={styles.main}>
-      <div className={styles.wrapper}>
-        <TitleBar  data={titleobj} />
-        {qnArraymain.map((item, idx) => {
-         
-
-          return React.cloneElement(comps[10], {
-            
-           
-            key: item.itemid,
-            data: item,
-            itemid: item.itemid,
-           
-          });
-        })}
-     
-
-  
-      </div>
-      <div className={styles.BtnContainer}>
-        
-        <div onClick={() => HandleFormUpload()} className={styles.submitBtn}>
-          upload Form
-        </div>
-     
-      </div>
-    </div>
+    <>
+      {(path == "/dashboard/form") == isAdmin ? (
+        <Formpage qnArraymain1={qnArraymain} titleobj1={titleobj} formids={formid}/>
+      ) : (
+        <>
+          {/* {isAdmin ? (
+          <Formpage qnArraymain1={qnArraymain} titleobj1={titleobj} />
+        ) : ( */}
+          <div className={styles.main}>
+            <div className={styles.wrapper}>
+              {/* {formData &&<h1>bsdk jwt ka neta mat bann</h1> } */}
+              <TitleBar data={titleobj} />
+              {qnArraymain.map((item, idx) => {
+                return React.cloneElement(comps[10], {
+                  key: item.itemid,
+                  data: item,
+                  itemid: item.itemid,
+                });
+              })}
+            </div>
+            <div className={styles.BtnContainer}>
+              <div
+                onClick={() => HandleFormUpload()}
+                className={styles.submitBtn}
+              >
+                upload Form
+              </div>
+            </div>
+          </div>
+          {/* </>)} */}
+        </>
+      )}
+    </>
   );
 };
 

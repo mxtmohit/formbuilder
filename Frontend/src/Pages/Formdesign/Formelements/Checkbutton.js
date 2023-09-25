@@ -80,7 +80,7 @@ const CheckButton = ({ setoptionvalueArray,data }) => {
       {checkOptions.map((item, idx) => {
         isActive = item.id == checkClickedId;
         return (
-          <div className={style.radioRow}>
+          <div key={idx} className={style.radioRow}>
             <div
               className={style.checkContainer}
               // onClick={() => Handlecheckclick(item)}

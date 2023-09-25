@@ -7,39 +7,49 @@ import axios from "axios";
 import ReactDatePicker from "react-datepicker";
 import ClockInput from "./Formelements/datepicker/ClockInput";
 import Snackbaralert from "./Formelements/shared/Snackbaralert";
+import { useSelector } from "react-redux";
 
 
 
 let i = 0;
-const Formpage = () => {
+const Formpage = ({qnArraymain1,titleobj1,formids}) => {
   const [selectedtype, setSelectType] = useState(0);
   const [titleobj, setTitle] = useState(
-    JSON.parse(localStorage.getItem("maintitle")) ?? {}
+    titleobj1 ?? JSON.parse(localStorage.getItem("maintitle")) ?? {}
   );
 
   const [message,setmessage]=useState("")
   const [isOpen,setIsOpen]=useState(false)
   const [type,setType]=useState("")
   const [qnArray, setQnArray] = useState({});
-  const [user,setUser]=useState("test@123")
+  // const [formid,setFormid]=useState(undefined)
+  // const [user,setUser]=useState("test@123")
   const [formData, setFormData] = useState({});
   const [Activate,setActivate]=useState();
   const [deActivate, setDeactivate] = useState();
   const [qnArraymain, setQnArraymain] = useState(
-    JSON.parse(localStorage.getItem("mainarray")) ?? [{ itemid: 0 }]
+    qnArraymain1 ??
+      JSON.parse(localStorage.getItem("mainarray")) ?? [{ itemid: 0 }]
   );
   const [clicked, setclicked] = useState(0);
-  const [eleId, SetEleId] = useState(
+  // console.log(qnArraymain1)
+  const [eleId, SetEleId] = useState(qnArraymain1?.length>0??qnArraymain1[qnArraymain1?.length - 1]??
     JSON.parse(localStorage.getItem("mainarray"))?.length
       ? qnArraymain[qnArraymain?.length - 1]?.itemid + 1
       : 1
   );
 
+   const { email, token } = useSelector(
+     (state) => state.userSlice
+   );
+
+    console.log("qnarray",qnArray)
   if (JSON.parse(localStorage.getItem("mainarray")))
     i = JSON.parse(localStorage.getItem("mainarray"))?.length;
 
   let updatedcomps;
-
+  const formid=formids
+  console.log("titleid",formid)
   let flag = true;
 
   const updateMainArray = (updatedarray) => {
@@ -49,7 +59,7 @@ const Formpage = () => {
 console.log(formData)
 
 useEffect(()=>{
-  setFormData({title:titleobj,qnData:qnArraymain,user:user})
+  setFormData({title:titleobj,qnData:qnArraymain,user:email})
   if (Activate) {
     setFormData(()=>({ ...formData, starttime: Activate}));
   }
@@ -174,14 +184,28 @@ const HandleFormUpload= async() => {
   try {
       setType("info")
       setIsOpen(true)
-      const res = await axios.post("http://localhost:5000/createform ", formData);
-      console.log(res.data)
-      if(res.status==200){
-          setIsOpen(true)
+      const res = await axios.post("http://localhost:5000/createform ", {formData,token,formid});
+      // console.log(res.data.me)
+      if (res.status == 200) {
+        setIsOpen(true);
 
-          navigator.clipboard.writeText(`http://localhost:3000/form/${res.data.id}`);
-        setType("success")
-        setmessage("Form Successfully Uploaded and Link copied to the ClipBoard")
+        navigator.clipboard.writeText(
+          `http://localhost:3000/form/${res.data.id}`
+        );
+        setType("success");
+        setmessage(
+          "Form Successfully Uploaded and Link copied to the ClipBoard"
+        );
+      } else if (res.status == 202) {
+        setIsOpen(true);
+
+        navigator.clipboard.writeText(
+          `http://localhost:3000/form/${res.data.id}`
+        );
+        setType("success");
+        setmessage(
+          res.data.message
+        );
       }
 
   } catch (error) {

@@ -15,8 +15,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 let i = 0;
 
-const Radiobuttons = ({setoptionvalueArray,data}) => {
-  const [radioLabel, setRadioLabel] = useState("");
+const Radiobuttons = ({setRadioResponse,data}) => {
+  const [radioResponse, setRadioResponse1] = useState();
   const [editradioLabel, setEditRadioLabel] = useState("");
   const [radioOptions, setRadioOptions] = useState([]);
   const [radioClickedId, setRadioClickedId] = useState();
@@ -39,8 +39,10 @@ const Radiobuttons = ({setoptionvalueArray,data}) => {
   
 
   const Handleradioclick = (item) => {
-    setRadioClickedId(item.id);
-    setEditRadioLabel(item.label);
+    // setRadioClickedId(item.id);
+    // setEditRadioLabel(item.label);
+    setRadioResponse1(item)
+    setRadioResponse(item)
   };
 
  
@@ -62,9 +64,10 @@ const Radiobuttons = ({setoptionvalueArray,data}) => {
             >
               <FormControlLabel
                 name="radio"
-                checked={false}
+                checked={radioResponse==item.value}
+                onClick={()=>Handleradioclick(item.value)}
                 value={item.label}
-                control={<Radio />}
+                control={<Radio  />}
                 label={
                 
                     <div className={style.labelText}>{item.label}</div>

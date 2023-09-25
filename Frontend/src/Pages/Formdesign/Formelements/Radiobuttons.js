@@ -9,36 +9,35 @@ import {
 import React, { useEffect, useState } from "react";
 import style from "./Radiobuttons.module.css";
 import AddIcon from "@mui/icons-material/Add";
-import ClearIcon from '@mui/icons-material/Clear';
+import ClearIcon from "@mui/icons-material/Clear";
 
 //import {AddIcon} from "@material-ui/icons";
 
 let i = 0;
 
-const Radiobuttons = ({setoptionvalueArray,data}) => {
+const Radiobuttons = ({ setoptionvalueArray, data }) => {
   const [radioLabel, setRadioLabel] = useState("");
   const [editradioLabel, setEditRadioLabel] = useState("");
   const [radioOptions, setRadioOptions] = useState([]);
   const [radioClickedId, setRadioClickedId] = useState();
 
   let isActive = false;
-  useEffect(()=>{setData()},[])
+  useEffect(() => {
+    setData();
+  }, []);
 
- const setData=()=>{
-  
-  if(data)
-    setRadioOptions(data)
- }  
+  const setData = () => {
+    if (data) setRadioOptions(data);
+  };
 
-
-  const HandleDeleteOption=(id)=>{
+  const HandleDeleteOption = (id) => {
     // setoptionvalueArray(radioOptions)
-    setRadioOptions(radioOptions.filter((item)=>{
-      return item.id!=id
-
-    }))
-
-  }
+    setRadioOptions(
+      radioOptions.filter((item) => {
+        return item.id != id;
+      })
+    );
+  };
 
   const HandleAddOption = () => {
     if (radioLabel.length != 0) {
@@ -78,17 +77,16 @@ const Radiobuttons = ({setoptionvalueArray,data}) => {
   };
 
   useEffect(() => {
-    setoptionvalueArray(radioOptions)
+    setoptionvalueArray(radioOptions);
     console.log(radioOptions);
   }, [radioOptions]);
 
   return (
     <div className={style.container}>
-      {
-      radioOptions.map((item, idx) => {
+      {radioOptions.map((item, idx) => {
         isActive = item.id == radioClickedId;
         return (
-          <div className={style.radioRow}>
+          <div key={idx} className={style.radioRow}>
             <div
               className={style.radioContainer}
               // onClick={() => Handleradioclick(item)}
@@ -118,15 +116,16 @@ const Radiobuttons = ({setoptionvalueArray,data}) => {
                 }
               />
             </div>
-            <IconButton className={style.rmvicon} onClick={()=>HandleDeleteOption(item.id)}>
-              <ClearIcon  />
+            <IconButton
+              className={style.rmvicon}
+              onClick={() => HandleDeleteOption(item.id)}
+            >
+              <ClearIcon />
             </IconButton>
           </div>
         );
-      })
-      }
-      
-       
+      })}
+
       <div style={{ display: "flex", flexDirection: "row" }}>
         <FormControlLabel
           name="radio"

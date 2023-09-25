@@ -63,7 +63,7 @@ setData()
     setqnOptionType(event.target.value);
     setSelectType(event.target.value);
   };
-  // console.log("heollo",isactive)
+  // console.log("heollo",)
  const optiontype = (qnOpType)=>{
   switch(qnOpType){
     case(0):{

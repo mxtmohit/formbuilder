@@ -4,7 +4,7 @@ import s1 from "./Authpage.module.css";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Login from "./Authcomponents/Login";
-import Signup from "./Authcomponents/Signup"
+import Signup from "./Authcomponents/Signup";
 
 const Authpage = () => {
   const [signUpbtn, setSignUpBtn] = useState(false);
@@ -18,9 +18,9 @@ const Authpage = () => {
       <div className={s1.main}>
         <div className={s1.parentContainer}>
           {signUpbtn ? (
-            <Login authType={HandleAuthType} />
-          ) : (
             <Signup authType={HandleAuthType} />
+          ) : (
+            <Login authType={HandleAuthType} />
           )}
         </div>
       </div>

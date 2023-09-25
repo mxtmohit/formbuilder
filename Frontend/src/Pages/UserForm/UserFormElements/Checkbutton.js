@@ -12,11 +12,12 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 let i = 0;
 
-const CheckButton = ({ setoptionvalueArray,data }) => {
+const CheckButton = ({ setCheckResponse,data }) => {
   const [checkLabel, setCheckLabel] = useState("");
   const [editcheckLabel, setEditCheckLabel] = useState("");
   const [checkOptions, setCheckOptions] = useState([]);
   const [checkClickedId, setCheckClickedId] = useState();
+  const [checkResponse,setCheckResposne]=useState({})
   
 
   let isActive = false;
@@ -29,14 +30,22 @@ const CheckButton = ({ setoptionvalueArray,data }) => {
   }
 
   
+console.log("state ", checkResponse);
+let response = checkResponse; 
+   
 
-  
+  const Handlecheckclick = (e,idx) => {
+    // setCheckClickedId(item.id);
+    // setEditCheckLabel(item.label);
+    // const responsearray=setCheckResposne(prev=>(checkResponse[idx]=e.target.value))
+    // setCheckResposne
+   
+    setCheckResposne({...checkResponse,[e.target.value]:e.target.checked})
+    setCheckResponse({ ...checkResponse, [e.target.value]: e.target.checked });
 
-  const Handlecheckclick = (item) => {
-    setCheckClickedId(item.id);
-    setEditCheckLabel(item.label);
   };
-
+  
+console.log(" ",checkResponse[0])
   
 
  
@@ -50,20 +59,13 @@ const CheckButton = ({ setoptionvalueArray,data }) => {
             <div
               className={style.checkContainer}
               // onClick={() => Handlecheckclick(item)}
-              onMouseEnter={() => {
-                Handlecheckclick(item);
-              }}
             >
               <FormControlLabel
                 value={item.label}
-                control={<Checkbox />}
-                label={
-                    <div className={style.labelText}>{item.label}</div>
-                  
-                }
+                control={<Checkbox checked={checkResponse[item.value] || false} onChange={(e)=>Handlecheckclick(e,idx)} />}
+                label={<div className={style.labelText}>{item.label}</div>}
               />
             </div>
-
           </div>
         );
       })
