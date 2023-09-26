@@ -9,18 +9,23 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Formpage from "../../Formdesign/Formpage";
 
-
 let i = 0;
-const UserFormpage = () => {
+const UserFormpage = ({responseData1}) => {
   const { formid } = useParams();
   const navigate = useNavigate();
-  const location = window.location.pathname
+  const location = window.location.pathname;
+   const lov = useLocation();
+   const userResponse = lov.state.response;
+   console.log("ggk", userResponse);
 
-  const path=location?.split('/').slice(0,3).join("/")
+  const path = location?.split("/").slice(0, 3).join("/");
 
-  console.log("route",path)
+   console.log("route",responseData1)
 
-  console.log(formid);
+  // console.log(formid);
+  const [optionResponseObject, setOptionResponseObject] = useState();
+  const [formResponseArray, setFormResponseArray] = useState([]);
+  console.log("response", formResponseArray);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedtype, setSelectType] = useState(0);
   const [titleobj, setTitle] = useState(
@@ -43,6 +48,30 @@ const UserFormpage = () => {
   let updatedcomps;
 
   let flag = true;
+
+  useEffect(()=>{
+    //console.log(Object.keys(optionResponseObject)[0]);
+    let isNew=true
+    if(optionResponseObject){
+    const newarray=formResponseArray.map((item)=>{
+      
+    //console.log("hwllo",Object.keys(item)[0] == Object.keys(optionResponseObject)[0]);
+      
+      if(Object.keys(item)[0]==Object.keys(optionResponseObject)[0]){
+        isNew=false
+        return optionResponseObject}
+        
+      else 
+        return item
+      
+    })
+    if(isNew)
+      setFormResponseArray([...formResponseArray, optionResponseObject]);
+    else
+      setFormResponseArray(newarray);
+  }
+  //   setFormResponseArray([...formResponseArray,optionResponseObject])
+  },[optionResponseObject])
 
   const updateMainArray = (updatedarray) => {
     setQnArraymain(() => updatedarray);
@@ -93,6 +122,7 @@ const UserFormpage = () => {
       <Formboiler
         clicked={clicked}
         // key={eleId}
+        setOptionResponseObject={setOptionResponseObject}
         handleaddclick={handleaddclick}
         setSelectType={HandlesetSelectType}
       />
@@ -156,17 +186,18 @@ const UserFormpage = () => {
 
       setFormData(res.data.formData);
 
-      const { title, qnData} = res.data.formData;
+      const { title, qnData } = res.data.formData;
       setIsAdmin(res.data.isAdmin);
       setTitle(title);
       setQnArraymain(qnData);
+      
 
       // setFormData(res.)
     } catch (error) {
       console.log("coudnt submit my bad");
-      navigate("/auth");
-      setTitle({});
-      setQnArraymain([]);
+      // navigate("/auth");
+      // setTitle({});
+      // setQnArraymain([]);
     }
   };
 
@@ -174,17 +205,21 @@ const UserFormpage = () => {
     try {
       const res = await axios.post(
         "http://localhost:5000/form/submit",
-        formData
+        {formid,responseData:formResponseArray,token}
       );
     } catch (error) {
       console.log("coudnt submit my bad");
     }
   };
-
+console.log(path == "/dashboard/form" == isAdmin)
   return (
     <>
       {(path == "/dashboard/form") == isAdmin ? (
-        <Formpage qnArraymain1={qnArraymain} titleobj1={titleobj} formids={formid}/>
+        <Formpage
+          qnArraymain1={qnArraymain}
+          titleobj1={titleobj}
+          formids={formid}
+        />
       ) : (
         <>
           {/* {isAdmin ? (
@@ -199,17 +234,20 @@ const UserFormpage = () => {
                   key: item.itemid,
                   data: item,
                   itemid: item.itemid,
+                  response1: userResponse[idx],
                 });
               })}
             </div>
-            <div className={styles.BtnContainer}>
-              <div
-                onClick={() => HandleFormUpload()}
-                className={styles.submitBtn}
-              >
-                upload Form
+            {!responseData1 ?? (
+              <div className={styles.BtnContainer}>
+                <div
+                  onClick={() => HandleFormUpload()}
+                  className={styles.submitBtn}
+                >
+                  upload Form
+                </div>
               </div>
-            </div>
+            )}
           </div>
           {/* </>)} */}
         </>

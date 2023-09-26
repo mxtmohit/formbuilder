@@ -12,43 +12,34 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 let i = 0;
 
-const CheckButton = ({ setCheckResponse,data }) => {
+const CheckButton = ({ setanswervalueArray, data ,ansdata}) => {
   const [checkLabel, setCheckLabel] = useState("");
   const [editcheckLabel, setEditCheckLabel] = useState("");
   const [checkOptions, setCheckOptions] = useState([]);
   const [checkClickedId, setCheckClickedId] = useState();
-  const [checkResponse,setCheckResposne]=useState({})
-  
+  const [checkResponse, setCheckResposne] = useState({});
+  console.log(ansdata)
+
+  useEffect(()=>{setCheckResposne(ansdata)},[])
 
   let isActive = false;
-  useEffect(()=>{
-    setData()
-  },[])
-  const setData=()=>{
-    if(data)
-      setCheckOptions(data)
-  }
-
-  
-console.log("state ", checkResponse);
-let response = checkResponse; 
-   
-
-  const Handlecheckclick = (e,idx) => {
-    // setCheckClickedId(item.id);
-    // setEditCheckLabel(item.label);
-    // const responsearray=setCheckResposne(prev=>(checkResponse[idx]=e.target.value))
-    // setCheckResposne
-   
-    setCheckResposne({...checkResponse,[e.target.value]:e.target.checked})
-    setCheckResponse({ ...checkResponse, [e.target.value]: e.target.checked });
-
+  useEffect(() => {
+    setData();
+  }, []);
+  const setData = () => {
+    if (data) setCheckOptions(data);
   };
-  
-console.log(" ",checkResponse[0])
-  
 
- 
+  let response = checkResponse;
+
+  const Handlecheckclick = (e, idx) => {
+    setCheckResposne({ ...checkResponse, [e.target.value]: e.target.checked });
+  };
+  useEffect(() => {
+    setanswervalueArray(checkResponse);
+  }, [checkResponse]);
+
+  console.log(" ", checkResponse[0]);
 
   return (
     <div className={style.container}>
@@ -62,15 +53,18 @@ console.log(" ",checkResponse[0])
             >
               <FormControlLabel
                 value={item.label}
-                control={<Checkbox checked={checkResponse[item.value] || false} onChange={(e)=>Handlecheckclick(e,idx)} />}
+                control={
+                  <Checkbox
+                    checked={checkResponse[item.value] || false}
+                    onChange={(e) => Handlecheckclick(e)}
+                  />
+                }
                 label={<div className={style.labelText}>{item.label}</div>}
               />
             </div>
           </div>
         );
-      })
-      }
-      
+      })}
     </div>
   );
 };

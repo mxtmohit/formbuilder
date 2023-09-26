@@ -2,12 +2,12 @@
 
 .main {
     width: 100%;
-    min-height: 100vh;
-   
+    height: 100vh;
     display:flex;
-    align-items: center;
+    align-items:flex-start;
     justify-content: center;
     background-color: hwb(0 100% 0%);
+    padding-bottom: 100px;
     
     
     /* padding:5px */
@@ -16,10 +16,10 @@
 .wrapper{
    
 
-    min-height: 100vh;
+    min-height: calc(100vh - 150px);
     max-width: 1000px;
     width: 1000PX;
-    
+    margin-top: 150px;
     padding: 10px;
     /* margin: 10px; */
     
@@ -32,10 +32,10 @@
    
 }
 .BtnContainer{
-    position: sticky;
-        top: 800px;
+    position: fixed;
+       
         right: 15%;
-        bottom: 0;
+        bottom: 10px;
         /* // bottom: 10%; */
         cursor: pointer;
         /* width: 40px; */
@@ -48,8 +48,8 @@
         margin: 10px;
 }
 .addBtn{
-    position: sticky;
-    top:800px;
+    /* position: sticky; */
+    top:80%;
     right: 15%;
     bottom: 0;
    /* // bottom: 10%; */

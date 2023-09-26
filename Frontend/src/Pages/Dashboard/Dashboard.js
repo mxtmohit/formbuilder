@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import html2canvas from "html2canvas";
 import Snapshot from "./DashboarComponent/UserFormPage/Snapshot";
 import { NavLink } from "react-router-dom";
+import SnapshotBlank from "./DashboarComponent/UserFormPage/SnapshotBlank";
 
 
 const Dashboard = () => {
@@ -34,7 +35,7 @@ const Dashboard = () => {
     const fetchForms = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/getforms/?user=${email}`,
+          `http://localhost:5000/getforms`,
           config
         );
 
@@ -52,45 +53,46 @@ const Dashboard = () => {
   }, []);
  
 // console.log("idgorm",form)
-  return (
-    
-      <div className={styles.mainContainer}>
-        {formsArray.map((item) => {
-          return (<NavLink
-          to={`/dashboard/form/${item._id}`}
-          style={({ isActive }) => ({
-            color: isActive ? "Red" : "Black",
-          })}
-        >
-          <div
-                className={styles.formCard}
-                
-              >
-                <Snapshot
-                  qnarraydata={item.qnArray}
-                  formid={item._id}
-                  titleData={item.title}
-                  useRef1={targetRef}
-                />
+  return ( 
+    <div className={styles.mainContainer}>
+      
+      <div className={styles.wrapper}>
+        <div className={styles.topContainer}>
+          <div className={styles.formCard}>
+            <Link
+              to={`/dashboard/createform`} 
+              
+            >
+              <SnapshotBlank
+              
+
+              />
+            </Link>
+          </div>
+          {formsArray.map((item) => {
+            return (
+              <div className={styles.formCard}>
+                <Link
+                  to={`/dashboard/editviewform/${item._id}`}
+                  state={{formData:item  }}
+                  // style={({ isActive }) => ({
+                  //   color: isActive ? "Red" : "Black",
+                  // })}
+                >
+                  <Snapshot
+                    qnarraydata={item.qnArray}
+                    formid={item._id}
+                    titleData={item.title}
+                    useRef1={targetRef}
+                  />
+                </Link>
               </div>
-        </NavLink>
-            // <Link to={`/dashboard/form/${item._id}`}>
-            //   <div
-            //     className={styles.formCard}
-                
-            //   >
-            //     <Snapshot
-            //       qnarraydata={item.qnArray}
-            //       formid={item._id}
-            //       titleData={item.title}
-            //       useRef1={targetRef}
-            //     />
-            //   </div>
-            // </Link>
-          );
-        })}
+            );
+          })}
+        </div>
+        <div className={styles.btmContainer}></div>
       </div>
-    
+    </div>
   );
 };
 

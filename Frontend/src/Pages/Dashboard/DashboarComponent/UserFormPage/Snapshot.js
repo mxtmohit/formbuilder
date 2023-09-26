@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import styles from "./Snapshot.module.css";
+import s from "./Snapshot.module.css";
 import { MenuItem, Select, TextField } from "@mui/material";
 import Formboiler from "../../../UserForm/UserFormElements/Formboiler";
 
@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 
 let i = 0;
-const Snapshot = ({qnarraydata,titleData,useRef1}) => {
+const Snapshot = ({qnarraydata,titleData,useRef1,isNew}) => {
 
 
   const { formid } = useParams();
@@ -21,12 +21,13 @@ const Snapshot = ({qnarraydata,titleData,useRef1}) => {
   const [titleobj, setTitle] = useState(titleData?? {})
   
   return (
-    <div ref={useRef1} className={styles.main}>
-      <div className={styles.wrapper}>
+    <div ref={useRef1} className={s.main}>
+      <div className={s.wrapper}>
         
-        {titleData?.title}
+        {isNew?<h1>ADD new</h1>:titleData?.title}
        
       </div>
+      <>{isNew || <div className={s.dateCard}>ffsd</div>}</>
       
     </div>
   );

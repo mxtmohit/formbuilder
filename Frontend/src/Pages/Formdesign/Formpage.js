@@ -8,71 +8,75 @@ import ReactDatePicker from "react-datepicker";
 import ClockInput from "./Formelements/datepicker/ClockInput";
 import Snackbaralert from "./Formelements/shared/Snackbaralert";
 import { useSelector } from "react-redux";
-
-
+import Navbar from "./Formelements/Navbar";
+import ResponsePage from "../Dashboard/DashboarComponent/AllResponsePage/ResponsePage";
+import { useLocation } from "react-router-dom";
 
 let i = 0;
-const Formpage = ({qnArraymain1,titleobj1,formids}) => {
+const Formpage = ({ qnArraymain1, titleobj1, formids }) => {
+
+  const location = useLocation();
+  const formState = location?.state?.formData;
   const [selectedtype, setSelectType] = useState(0);
-  const [titleobj, setTitle] = useState(
+  const [titleobj, setTitle] = useState(formState?.title??
     titleobj1 ?? JSON.parse(localStorage.getItem("maintitle")) ?? {}
   );
 
-  const [message,setmessage]=useState("")
-  const [isOpen,setIsOpen]=useState(false)
-  const [type,setType]=useState("")
+  const [message, setmessage] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [type, setType] = useState("");
   const [qnArray, setQnArray] = useState({});
   // const [formid,setFormid]=useState(undefined)
   // const [user,setUser]=useState("test@123")
   const [formData, setFormData] = useState({});
-  const [Activate,setActivate]=useState();
+  const [showResponse, setshowResponse] = useState(false);
+  const [Activate, setActivate] = useState();
   const [deActivate, setDeactivate] = useState();
-  const [qnArraymain, setQnArraymain] = useState(
+  const [qnArraymain, setQnArraymain] = useState(formState?.qnArray??
     qnArraymain1 ??
       JSON.parse(localStorage.getItem("mainarray")) ?? [{ itemid: 0 }]
   );
   const [clicked, setclicked] = useState(0);
   // console.log(qnArraymain1)
-  const [eleId, SetEleId] = useState(qnArraymain1?.length>0??qnArraymain1[qnArraymain1?.length - 1]??
-    JSON.parse(localStorage.getItem("mainarray"))?.length
+  const [eleId, SetEleId] = useState(
+    qnArraymain1?.length > 0 ??
+      qnArraymain1[qnArraymain1?.length - 1] ??
+      JSON.parse(localStorage.getItem("mainarray"))?.length
       ? qnArraymain[qnArraymain?.length - 1]?.itemid + 1
       : 1
   );
 
-   const { email, token } = useSelector(
-     (state) => state.userSlice
-   );
+  const { email, token } = useSelector((state) => state.userSlice);
+  
+  console.log("ggdd",formState)
 
-    console.log("qnarray",qnArray)
+  console.log("qnarray", qnArray);
   if (JSON.parse(localStorage.getItem("mainarray")))
     i = JSON.parse(localStorage.getItem("mainarray"))?.length;
 
   let updatedcomps;
-  const formid=formids
-  console.log("titleid",formid)
+  const formid = formState?._id;
+  console.log("titleid", formid);
   let flag = true;
 
   const updateMainArray = (updatedarray) => {
-    setQnArraymain(()=>updatedarray);
-    
+    setQnArraymain(() => updatedarray);
   };
-console.log(formData)
+  console.log(formData);
 
-useEffect(()=>{
-  setFormData({title:titleobj,qnData:qnArraymain,user:email})
-  if (Activate) {
-    setFormData(()=>({ ...formData, starttime: Activate}));
-  }
-  if (deActivate) {
-    setFormData({ ...formData,endtime: deActivate });
-  }
-},[qnArraymain,titleobj,Activate,deActivate])
+  useEffect(() => {
+    setFormData({ title: titleobj, qnData: qnArraymain, user: email });
+    if (Activate) {
+      setFormData(() => ({ ...formData, starttime: Activate }));
+    }
+    if (deActivate) {
+      setFormData({ ...formData, endtime: deActivate });
+    }
+  }, [qnArraymain, titleobj, Activate, deActivate]);
 
-console.log(formData)
+  console.log(formData);
 
   const handleaddclickmain = () => {
-    
-
     updatedcomps = qnArraymain.map((item) => {
       if (item.itemid == qnArray.itemid) {
         flag = false;
@@ -89,14 +93,16 @@ console.log(formData)
   };
 
   useEffect(() => {
-    console.log(qnArray?.options?.optionarray)
-    if (qnArray?.Qntext || qnArray?.Qntext == ""||qnArray?.Options?.optionarray) {
+    console.log(qnArray?.options?.optionarray);
+    if (
+      qnArray?.Qntext ||
+      qnArray?.Qntext == "" ||
+      qnArray?.Options?.optionarray
+    ) {
       console.log("usefeect worked2", qnArray);
       handleaddclickmain();
     }
   }, [qnArray]);
-
-  
 
   const handleaddclick = (a) => {
     setQnArray(a);
@@ -109,7 +115,7 @@ console.log(formData)
   const Handlecompclick = (idx) => {
     setCompActiveIndex(idx);
   };
-  console.log()
+  console.log();
 
   const comps = {
     10: (
@@ -122,9 +128,9 @@ console.log(formData)
     ),
   };
 
-  const HandleSetTitle=(obj)=>{
-    setTitle(obj)
-  }
+  const HandleSetTitle = (obj) => {
+    setTitle(obj);
+  };
 
   const HandleDeleteElement = (id) => {
     console.log("clicked id: ", id);
@@ -134,14 +140,11 @@ console.log(formData)
     updateMainArray(updatedMainArray);
   };
 
-
-
   useEffect(() => {
-
     if (qnArraymain)
       localStorage.setItem("mainarray", JSON.stringify(qnArraymain));
     localStorage.setItem("maintitle", JSON.stringify(titleobj));
-  }, [qnArraymain,titleobj]);
+  }, [qnArraymain, titleobj]);
 
   const [Formelements, setFormelements] = useState([
     {
@@ -155,8 +158,6 @@ console.log(formData)
       ),
     },
   ]);
-
-
 
   const handleFormElements = (k) => {
     setQnArraymain([...qnArraymain, { itemid: k }]);
@@ -180,11 +181,15 @@ console.log(formData)
   const [compActiveIndex, setCompActiveIndex] = useState(0);
   let isactive = true;
 
-const HandleFormUpload= async() => {
-  try {
-      setType("info")
-      setIsOpen(true)
-      const res = await axios.post("http://localhost:5000/createform ", {formData,token,formid});
+  const HandleFormUpload = async () => {
+    try {
+      setType("info");
+      setIsOpen(true);
+      const res = await axios.post("http://localhost:5000/createform ", {
+        formData,
+        token,
+        formid,
+      });
       // console.log(res.data.me)
       if (res.status == 200) {
         setIsOpen(true);
@@ -203,81 +208,78 @@ const HandleFormUpload= async() => {
           `http://localhost:3000/form/${res.data.id}`
         );
         setType("success");
-        setmessage(
-          res.data.message
-        );
+        setmessage(res.data.message);
       }
-
-  } catch (error) {
-    console.log("coudnt submit my bad")
-      setIsOpen(true)
-      setType("error")
-      setmessage("something went wrong try gain later")
-  }
-  
-};
-  
+    } catch (error) {
+      console.log("coudnt submit my bad");
+      setIsOpen(true);
+      setType("error");
+      setmessage("something went wrong try gain later");
+    }
+  };
 
   return (
-    <div className={styles.main}>
-      <div className={styles.wrapper}>
-        <TitleBar setTitleobj={HandleSetTitle} data={titleobj} />
-        {qnArraymain.map((item, idx) => {
-          isactive = idx == compActiveIndex;
+    <>
+      <div className={styles.main}>
+        <Navbar title={titleobj.title} showResponse={setshowResponse} />
+        {!showResponse ? (
+          <>
+            <div className={styles.wrapper}>
+              <TitleBar setTitleobj={HandleSetTitle} data={titleobj} />
+              {qnArraymain.map((item, idx) => {
+                isactive = idx == compActiveIndex;
 
-          return React.cloneElement(comps[10], {
-            onClick: () => {
-              Handlecompclick(idx);
-            },
-            isactive: { isactive },
-            key: item.itemid,
-            data: item,
-            itemid: item.itemid,
-            HandleDelete: HandleDeleteElement,
-          });
-        })}
-        {!qnArraymain.length && (
-          <div className="divs">
-            <h1>welldone idiot</h1>
-          </div>
+                return React.cloneElement(comps[10], {
+                  onClick: () => {
+                    Handlecompclick(idx);
+                  },
+                  isactive: { isactive },
+                  key: item.itemid,
+                  data: item,
+                  itemid: item.itemid,
+                  HandleDelete: HandleDeleteElement,
+                });
+              })}
+              {!qnArraymain.length && (
+                <div className="divs">
+                  <h1>welldone idiot</h1>
+                </div>
+              )}
+              <div>
+                <Snackbaralert
+                  setIsOpen={setIsOpen}
+                  isOpen={isOpen}
+                  type={type}
+                  message={message}
+                />
+              </div>
+            </div>
+            <div className={styles.BtnContainer}>
+              <div
+                onClick={() => (
+                  SetEleId((prev) => prev + 1), handleFormElements(eleId)
+                )}
+                className={styles.addBtn}
+              >
+                + Add
+              </div>
+              <div
+                onClick={() => HandleFormUpload()}
+                className={styles.submitBtn}
+              >
+                upload Form and copylink
+              </div>
+              <div>
+                <ClockInput setdatetime={setActivate} />
+                <ClockInput setdatetime={setDeactivate} />
+              </div>
+            </div>
+          </>
+        ) : (
+          <ResponsePage formid={formids} />
         )}
-        <div>
-          <Snackbaralert setIsOpen={setIsOpen} isOpen={isOpen} type={type} message={message}/>
-        </div>
-        {/* <div className={styles.menuInput}>
-          <Select
-            autoWidth
-            value={1}
-            onChange={handleMenuChange}
-            //   displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-          >
-            <MenuItem value={1}>single correct</MenuItem>
-            <MenuItem value={2}>Multiple correct</MenuItem>
-          </Select>
-        </div> */}
       </div>
-      <div className={styles.BtnContainer}>
-        <div
-          onClick={() => (
-            SetEleId((prev) => prev + 1), handleFormElements(eleId)
-          )}
-          className={styles.addBtn}
-        >
-          + Add
-        </div>
-        <div onClick={() => HandleFormUpload()} className={styles.submitBtn}>
-          upload Form and copylink
-        </div>
-        <div>
-          <ClockInput setdatetime={setActivate} />
-          <ClockInput setdatetime={setDeactivate} />
-        </div>
-        {/* <div onClick={handleFormElements} className={styles.addBtn}>
-        + submit
-      </div> */}
-      </div>
-    </div>
+    </>
   );
 };
 

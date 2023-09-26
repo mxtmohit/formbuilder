@@ -1,13 +1,44 @@
 .mainContainer{
     height: 100%;
     width: 100%;
-    background-color:cadetblue
+    background-color:cadetblue;
+    padding:10px;
+    display: flex;
+    justify-content: center;
+}
+*{
+text-decoration: none;
+color: black;
+
+}
+
+.wrapper{
+height: 100%;
+width:60%;
+background-color: aqua;
+}
+
+.topContainer{
+    display: flex;
+    align-items: center;
+    height: 30%;
+    width: 100%;
+    padding:10px;
+
+}
+.btnContainer {
+    display: flex;
+    align-items: center;
+    height: 30%;
+    width: 100%;
+    padding:20px;
+
 }
 
 .formCard{
     height: 150px;
     width: 200px;
-    
+    margin: 10px;
     overflow: hidden;
     
 }

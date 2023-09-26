@@ -15,7 +15,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 let i = 0;
 
-const Radiobuttons = ({setRadioResponse,data}) => {
+const Radiobuttons = ({setanswerValue,data,ansdata}) => {
   const [radioResponse, setRadioResponse1] = useState();
   const [editradioLabel, setEditRadioLabel] = useState("");
   const [radioOptions, setRadioOptions] = useState([]);
@@ -23,6 +23,11 @@ const Radiobuttons = ({setRadioResponse,data}) => {
 
   let isActive = false;
  useEffect(()=>{setData()},[])
+
+ useEffect(() => {
+   setRadioResponse1(ansdata);
+ }, []);
+
 
  const setData=()=>{
   
@@ -42,7 +47,7 @@ const Radiobuttons = ({setRadioResponse,data}) => {
     // setRadioClickedId(item.id);
     // setEditRadioLabel(item.label);
     setRadioResponse1(item)
-    setRadioResponse(item)
+    setanswerValue(item)
   };
 
  

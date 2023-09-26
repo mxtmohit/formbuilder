@@ -96,9 +96,9 @@ app.post("/createform", verifytoken, async (req, res) => {
   if (req.body.formid) {
     try {
       await Form.updateOne(
-         { _id: req.body.formid }, // Query to find the document(s) to update
-         { $set: { qnData: formData.qnData, title: formData.title } } // Update operation
-       );
+        { _id: req.body.formid }, // Query to find the document(s) to update
+        { $set: { qnData: formData.qnData, title: formData.title } } // Update operation
+      );
       // const newform = new Form(formData);
       // const formids = await Form.findOne({ "title._id": req.body.formid });
       // console.log(formids)
@@ -132,19 +132,21 @@ app.post("/createform", verifytoken, async (req, res) => {
 
 app.get("/getforms", verifytoken, async (req, res) => {
   try {
-    const user = req.query.user;
+    const user = req.user.username;
     const forms = await Form.find({ user: user });
     return res.json({ forms });
   } catch (e) {
     console.log(e.message);
     return res.json({ message: "couldn send any form, server error" });
-
   }
 });
 
-app.post("/submit", verifytoken, async () => {
-  const { user, data, formid } = req.data;
-  const formResponse = FormResponse({ formid, response, user });
+app.post("/form/submit", verifytoken, async (req, res) => {
+  //console.log(req)
+  const { formid } = req.body;
+  const responseData = req.body.responseData;
+  const user = req.user.username;
+  const formResponse = FormResponse({ formid, response: responseData, user });
   try {
     await formResponse.save();
     return res.json({ message: "Form Submitted Successfully" });
@@ -153,6 +155,24 @@ app.post("/submit", verifytoken, async () => {
       .status(401)
       .json({ message: "could not submit your form at the moment" });
   }
+});
+
+app.get("/getresponse/:formid", verifytoken, async (req, res) => {
+  console.log(req.params)
+  const {formid} = req.params;
+  const user = req.user.username;
+  try {
+    const form = await Form.findOne({ _id: formid,user:user });
+    // console.log(form)
+    if(form)
+      {
+        const allresponses=await FormResponse.find({formid:form._id})
+        return res.status(200).json({allresponses,message:"success"})
+      }
+      else{
+        console.log("no form found")
+      }
+  } catch(e) {console.log(e.message)}
 });
 
 app.listen(5000, () => {

@@ -1,0 +1,33 @@
+.main {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: hwb(0 100% 0%);
+    padding-bottom: 100px;
+
+
+    /* padding:5px */
+
+}
+
+.wrapper {
+
+
+    min-height: calc(100vh - 150px);
+    max-width: 1000px;
+    width: 1000PX;
+    margin-top: 150px;
+    padding: 10px;
+    /* margin: 10px; */
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: hwb(162 67% 0%);
+
+    border: 2px solid hwb(0 63% 37%);
+    ;
+
+}
