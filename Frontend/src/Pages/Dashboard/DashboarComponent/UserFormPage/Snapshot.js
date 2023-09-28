@@ -15,7 +15,7 @@ const Snapshot = ({qnarraydata,titleData,useRef1,isNew}) => {
 
   const { formid } = useParams();
   const navigate=useNavigate()
-  console.log(qnarraydata,titleData,useRef1);
+  //console.log(qnarraydata,titleData,useRef1);
 
   const [selectedtype, setSelectType] = useState(0);
   const [titleobj, setTitle] = useState(titleData?? {})

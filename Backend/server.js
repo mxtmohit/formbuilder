@@ -27,6 +27,7 @@ app.post("/auth/signup", async (req, res) => {
   const { email, password } = req.body;
   const fname = req.body.firstname;
   const lname = req.body.lastname;
+  console.log(req.body)
 
   try {
     if (await User.findOne({ email })) {
@@ -34,7 +35,15 @@ app.post("/auth/signup", async (req, res) => {
     } else {
       const user = User({ email, password, firstname: fname, lastname: lname });
       await user.save();
-      return res.status(200).json({ message: "account created successfully" });
+      const token = jwt.sign(
+        { userId: user._id, username: user.email },
+        process.env.SECRET_KEY, // Change this to your own secret key
+        { expiresIn: "24h" } // Token expiration time
+      );
+
+      return res.status(200).json({message: "account created successfully" , user, token });
+    
+    
     }
   } catch (e) {
     console.log(e.message);
@@ -92,7 +101,7 @@ app.get("/form/:formid", verifytoken, async (req, res) => {
 
 app.post("/createform", verifytoken, async (req, res) => {
   let formData = req.body.formData;
-  console.log(req.body.formid);
+  console.log("formid=",req.body.formid);
   if (req.body.formid) {
     try {
       await Form.updateOne(

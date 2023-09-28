@@ -24,7 +24,7 @@ function App() {
         <Route
           path={`/dashboard/editviewform/:formid`}
           element={
-            <Formpage
+            <ResponsePage
             // qnArraymain1={qnArraymain1}
             // titleobj1={titleobj1}
             // formids={formid}
@@ -33,16 +33,17 @@ function App() {
         />
         <Route
           path={`/dashboard/viewresponses/:formid`}
-          element={<ResponseListPage />}
+          element={<ResponsePage />}
         />
         <Route path="/dashboard" element={<Dashboard />} exact />
         <Route
           path={`/dashboard/editviewform/:formid`}
-          element={<Formpage />}
+          element={<ResponsePage />}
         />
         <Route path="/dashboard/createform" element={<Formpage />} />
         <Route path="/" element={<Dashboard />}></Route>
         <Route path="/form/:formid" element={<UserFormpage />} />
+        <Route path="*" element={<h1>you lost My friend?</h1>}/>
         {/* <Radiobuttons/> */}
         {/* <COmp /> */}
       </Routes>

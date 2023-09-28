@@ -11,7 +11,7 @@ const TitleBar = ({ setTitleobj, data }) => {
     if (data) {
       setTitle(data?.title); setDescription(data?.description);
     }
-  }, []);
+  }, [data]);
 
  
   return (

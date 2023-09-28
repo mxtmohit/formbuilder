@@ -8,33 +8,38 @@ import { useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Formpage from "../../Formdesign/Formpage";
+import Snackbaralert from "../../Formdesign/Formelements/shared/Snackbaralert";
 
 let i = 0;
-const UserFormpage = ({responseData1}) => {
+const UserFormpage = ({ responseData1 }) => {
   const { formid } = useParams();
   const navigate = useNavigate();
   const location = window.location.pathname;
-   const lov = useLocation();
-   const userResponse = lov.state.response;
-   console.log("ggk", userResponse);
+  const lov = useLocation();
+  const userResponse = lov?.state?.response;
+  //.log("ggk", userResponse);
+
+  const [message, setmessage] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [type, setType] = useState("");
 
   const path = location?.split("/").slice(0, 3).join("/");
 
-   console.log("route",responseData1)
+  //.log("route", responseData1, userResponse);
 
-  // console.log(formid);
+  // //.log(formid);
   const [optionResponseObject, setOptionResponseObject] = useState();
   const [formResponseArray, setFormResponseArray] = useState([]);
-  console.log("response", formResponseArray);
+  //.log("response", formResponseArray);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedtype, setSelectType] = useState(0);
   const [titleobj, setTitle] = useState(
-    JSON.parse(localStorage.getItem("usermaintitle")) ?? {}
+    //JSON.parse(localStorage.getItem("usermaintitle")) ?? {}
   );
   const [qnArray, setQnArray] = useState({});
   const [formData, setFormData] = useState({});
   const [qnArraymain, setQnArraymain] = useState(
-    JSON.parse(localStorage.getItem("usermainarray")) ?? [{ itemid: 0 }]
+   // JSON.parse(localStorage.getItem("usermainarray")) ?? [{ itemid: 0 }]
   );
   const [clicked, setclicked] = useState(0);
 
@@ -42,36 +47,31 @@ const UserFormpage = ({responseData1}) => {
 
   if (!token) navigate(`/auth/${formid}`);
 
-  if (JSON.parse(localStorage.getItem("usermainarray")))
-    i = JSON.parse(localStorage.getItem("usermainarray"))?.length;
+  //if (JSON.parse(localStorage.getItem("usermainarray")))
+  //  i = JSON.parse(localStorage.getItem("usermainarray"))?.length;
 
   let updatedcomps;
 
   let flag = true;
 
-  useEffect(()=>{
-    //console.log(Object.keys(optionResponseObject)[0]);
-    let isNew=true
-    if(optionResponseObject){
-    const newarray=formResponseArray.map((item)=>{
-      
-    //console.log("hwllo",Object.keys(item)[0] == Object.keys(optionResponseObject)[0]);
-      
-      if(Object.keys(item)[0]==Object.keys(optionResponseObject)[0]){
-        isNew=false
-        return optionResponseObject}
-        
-      else 
-        return item
-      
-    })
-    if(isNew)
-      setFormResponseArray([...formResponseArray, optionResponseObject]);
-    else
-      setFormResponseArray(newarray);
-  }
-  //   setFormResponseArray([...formResponseArray,optionResponseObject])
-  },[optionResponseObject])
+  useEffect(() => {
+    ////.log(Object.keys(optionResponseObject)[0]);
+    let isNew = true;
+    if (optionResponseObject) {
+      const newarray = formResponseArray.map((item) => {
+        ////.log("hwllo",Object.keys(item)[0] == Object.keys(optionResponseObject)[0]);
+
+        if (Object.keys(item)[0] == Object.keys(optionResponseObject)[0]) {
+          isNew = false;
+          return optionResponseObject;
+        } else return item;
+      });
+      if (isNew)
+        setFormResponseArray([...formResponseArray, optionResponseObject]);
+      else setFormResponseArray(newarray);
+    }
+    //   setFormResponseArray([...formResponseArray,optionResponseObject])
+  }, [optionResponseObject]);
 
   const updateMainArray = (updatedarray) => {
     setQnArraymain(() => updatedarray);
@@ -98,13 +98,13 @@ const UserFormpage = ({responseData1}) => {
   };
 
   useEffect(() => {
-    console.log(qnArray?.options?.optionarray);
+    //.log(qnArray?.options?.optionarray);
     if (
       qnArray?.Qntext ||
       qnArray?.Qntext == "" ||
       qnArray?.Options?.optionarray
     ) {
-      console.log("usefeect worked2", qnArray);
+      //.log("usefeect worked2", qnArray);
       handleaddclickmain();
     }
   }, [qnArray]);
@@ -159,86 +159,91 @@ const UserFormpage = ({responseData1}) => {
       },
     };
 
-    // try{const axiosInstance = axios.create({
-    //     baseURL: 'https://api.example.com', // Replace with your API base URL
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'Authorization': `Bearer ${accessToken}`, // Set the Authorization header with "Bearer" and the token
-    //     },
-    //   });
-
-    //   // Make a GET request with the token in the header
-    //   const response = await axiosInstance.get('/api/endpoint');
-
-    //   console.log('Response:', response.data);
-    //   // Handle the response data here
-
-    // } catch (error) {
-    //   console.error('Error:', error);}
-
     try {
       const res = await axios.get(
         `http://localhost:5000/form/${formid}`,
         config
       );
-      // console.log(res.data);
-      // console.log("hello",res.data.formData);
-
+       if(res.status==200) {
       setFormData(res.data.formData);
-
+        console.log("isAdmin",isAdmin)
       const { title, qnData } = res.data.formData;
       setIsAdmin(res.data.isAdmin);
       setTitle(title);
       setQnArraymain(qnData);
-      
+       }
 
       // setFormData(res.)
     } catch (error) {
-      console.log("coudnt submit my bad");
-      // navigate("/auth");
-      // setTitle({});
-      // setQnArraymain([]);
+      //.log("coudnt submit my bad");
+      navigate("/auth");
+      setTitle({});
+      setQnArraymain([]);
     }
   };
 
   const HandleFormUpload = async () => {
     try {
-      const res = await axios.post(
-        "http://localhost:5000/form/submit",
-        {formid,responseData:formResponseArray,token}
-      );
+      const res = await axios.post("http://localhost:5000/form/submit", {
+        formid,
+        responseData: formResponseArray,
+        token,
+        
+      });
+
+      if(res.status==200)
+      {
+        setmessage("Form Submitted Successfully")
+        setType("success")
+        setIsOpen(true)
+      }
     } catch (error) {
-      console.log("coudnt submit my bad");
+      //.log("coudnt submit my bad");
+      setmessage("Couldnt Submit your Form");
+      setType("error");
+      setIsOpen(true);
     }
   };
-console.log(path == "/dashboard/form" == isAdmin)
+  //console.log("/dashboard/form", userResponse);
+
+  let userResponsemerged;
+
+  if (userResponse) {
+    userResponsemerged = userResponse.reduce((result, currentObj) => {
+      // Get the key and value from the current object
+      const [key, value] = Object.entries(currentObj)[0];
+
+      // Add the key-value pair to the result object
+      result[key] = value;
+
+      return result;
+    }, {});
+  }
+  console.log("userResponsecx",titleobj);
   return (
     <>
-      {(path == "/dashboard/form") == isAdmin ? (
-        <Formpage
-          qnArraymain1={qnArraymain}
-          titleobj1={titleobj}
-          formids={formid}
-        />
-      ) : (
-        <>
-          {/* {isAdmin ? (
-          <Formpage qnArraymain1={qnArraymain} titleobj1={titleobj} />
-        ) : ( */}
+      
           <div className={styles.main}>
             <div className={styles.wrapper}>
               {/* {formData &&<h1>bsdk jwt ka neta mat bann</h1> } */}
               <TitleBar data={titleobj} />
-              {qnArraymain.map((item, idx) => {
+              {qnArraymain?.length>0 && qnArraymain.map((item, idx) => {
+                console.log(
+                  "item._id",
+                  item._id,
+                  userResponsemerged ? userResponsemerged[item._id] : ""
+                );
+                let a = userResponsemerged ? userResponsemerged[item._id] : "";
                 return React.cloneElement(comps[10], {
                   key: item.itemid,
                   data: item,
                   itemid: item.itemid,
-                  response1: userResponse[idx],
+                  // response1: a=[5,"ab"]
+                  response1: a,
                 });
               })}
             </div>
-            {!responseData1 ?? (
+            {!userResponse && (
               <div className={styles.BtnContainer}>
                 <div
                   onClick={() => HandleFormUpload()}
@@ -248,11 +253,17 @@ console.log(path == "/dashboard/form" == isAdmin)
                 </div>
               </div>
             )}
+            <Snackbaralert
+              setIsOpen={setIsOpen}
+              isOpen={isOpen}
+              type={type}
+              message={message}
+            />
           </div>
           {/* </>)} */}
         </>
-      )}
-    </>
+      
+    
   );
 };
 

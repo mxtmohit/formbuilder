@@ -47,6 +47,8 @@ setData()
     // const handleMenuChange = (value) => {
     //   setqnOptionType(value);
     // };
+
+    console.log("hhh",itemid,data)
    
   useEffect(()=>{
   console.log("hello i m main");

@@ -20,11 +20,12 @@ const Signup = ({ authType }) => {
   const { token } = useSelector((state) => state.userSlice);
 
   const HandleSignup = async (event) => {
+    console.log("signup try")
     try {
       const userdata = await axios({
         method: "post",
         url: "http://localhost:5000/auth/signup",
-        data: { name: { firstname, lastname }, email, password,token },
+        data: { firstname, lastname , email, password},
       });
 
       navigate("/dashboard");

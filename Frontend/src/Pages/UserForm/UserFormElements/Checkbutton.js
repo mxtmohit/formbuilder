@@ -20,7 +20,7 @@ const CheckButton = ({ setanswervalueArray, data ,ansdata}) => {
   const [checkResponse, setCheckResposne] = useState({});
   console.log(ansdata)
 
-  useEffect(()=>{setCheckResposne(ansdata)},[])
+  useEffect(()=>{if(ansdata)setCheckResposne(ansdata)},[])
 
   let isActive = false;
   useEffect(() => {
@@ -39,7 +39,9 @@ const CheckButton = ({ setanswervalueArray, data ,ansdata}) => {
     setanswervalueArray(checkResponse);
   }, [checkResponse]);
 
-  console.log(" ", checkResponse[0]);
+  // console.log(" ", checkResponse??);
+
+  
 
   return (
     <div className={style.container}>

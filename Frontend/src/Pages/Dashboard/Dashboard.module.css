@@ -24,6 +24,7 @@ background-color: aqua;
     height: 30%;
     width: 100%;
     padding:10px;
+    flex-wrap: wrap
 
 }
 .btnContainer {

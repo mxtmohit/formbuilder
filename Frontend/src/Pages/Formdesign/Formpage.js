@@ -13,29 +13,36 @@ import ResponsePage from "../Dashboard/DashboarComponent/AllResponsePage/Respons
 import { useLocation } from "react-router-dom";
 
 let i = 0;
-const Formpage = ({ qnArraymain1, titleobj1, formids }) => {
-
+const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
+  console.log("formdata values", formDataValues);
   const location = useLocation();
-  const formState = location?.state?.formData;
+  // const [formState,setFormState]=useState()
+  const formState = formDataValues;
+  console.log("sss", formState);
   const [selectedtype, setSelectType] = useState(0);
-  const [titleobj, setTitle] = useState(formState?.title??
+  const [titleobj, setTitle] = useState(
+    // formState.title.title
     titleobj1 ?? JSON.parse(localStorage.getItem("maintitle")) ?? {}
   );
+  console.log("dsdsd", formState?.title);
 
   const [message, setmessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [type, setType] = useState("");
   const [qnArray, setQnArray] = useState({});
+
   // const [formid,setFormid]=useState(undefined)
   // const [user,setUser]=useState("test@123")
+
   const [formData, setFormData] = useState({});
   const [showResponse, setshowResponse] = useState(false);
   const [Activate, setActivate] = useState();
   const [deActivate, setDeactivate] = useState();
-  const [qnArraymain, setQnArraymain] = useState(formState?.qnArray??
+  const [qnArraymain, setQnArraymain] = useState(
     qnArraymain1 ??
       JSON.parse(localStorage.getItem("mainarray")) ?? [{ itemid: 0 }]
   );
+
   const [clicked, setclicked] = useState(0);
   // console.log(qnArraymain1)
   const [eleId, SetEleId] = useState(
@@ -45,17 +52,17 @@ const Formpage = ({ qnArraymain1, titleobj1, formids }) => {
       ? qnArraymain[qnArraymain?.length - 1]?.itemid + 1
       : 1
   );
-
   const { email, token } = useSelector((state) => state.userSlice);
-  
-  console.log("ggdd",formState)
+
+  //console.log("ggdd", formState);
 
   console.log("qnarray", qnArray);
   if (JSON.parse(localStorage.getItem("mainarray")))
     i = JSON.parse(localStorage.getItem("mainarray"))?.length;
 
   let updatedcomps;
-  const formid = formState?._id;
+
+  const [formid, setFormid] = useState(formid1);
   console.log("titleid", formid);
   let flag = true;
 
@@ -141,9 +148,16 @@ const Formpage = ({ qnArraymain1, titleobj1, formids }) => {
   };
 
   useEffect(() => {
-    if (qnArraymain)
+    let keys = ["mainarray", "maintitle"];
+
+    if (qnArraymain){
       localStorage.setItem("mainarray", JSON.stringify(qnArraymain));
     localStorage.setItem("maintitle", JSON.stringify(titleobj));
+    }
+    return keys.forEach((item)=>localStorage.removeItem(item))
+
+
+    
   }, [qnArraymain, titleobj]);
 
   const [Formelements, setFormelements] = useState([
@@ -193,10 +207,8 @@ const Formpage = ({ qnArraymain1, titleobj1, formids }) => {
       // console.log(res.data.me)
       if (res.status == 200) {
         setIsOpen(true);
-
-        navigator.clipboard.writeText(
-          `http://localhost:3000/form/${res.data.id}`
-        );
+        setFormid(res.data.id);
+        navigator.clipboard.writeText(`http://localhost:3000/form/${formid}`);
         setType("success");
         setmessage(
           "Form Successfully Uploaded and Link copied to the ClipBoard"
@@ -219,67 +231,65 @@ const Formpage = ({ qnArraymain1, titleobj1, formids }) => {
   };
 
   return (
-    <>
-      <div className={styles.main}>
-        <Navbar title={titleobj.title} showResponse={setshowResponse} />
-        {!showResponse ? (
-          <>
-            <div className={styles.wrapper}>
-              <TitleBar setTitleobj={HandleSetTitle} data={titleobj} />
-              {qnArraymain.map((item, idx) => {
-                isactive = idx == compActiveIndex;
+    <div className={styles.main}>
+      <div className={styles.wrapper}>
+        <TitleBar setTitleobj={HandleSetTitle} data={titleobj} />
+        {qnArraymain.map((item, idx) => {
+          isactive = idx == compActiveIndex;
 
-                return React.cloneElement(comps[10], {
-                  onClick: () => {
-                    Handlecompclick(idx);
-                  },
-                  isactive: { isactive },
-                  key: item.itemid,
-                  data: item,
-                  itemid: item.itemid,
-                  HandleDelete: HandleDeleteElement,
-                });
-              })}
-              {!qnArraymain.length && (
-                <div className="divs">
-                  <h1>welldone idiot</h1>
-                </div>
-              )}
-              <div>
-                <Snackbaralert
-                  setIsOpen={setIsOpen}
-                  isOpen={isOpen}
-                  type={type}
-                  message={message}
-                />
-              </div>
-            </div>
-            <div className={styles.BtnContainer}>
-              <div
-                onClick={() => (
-                  SetEleId((prev) => prev + 1), handleFormElements(eleId)
-                )}
-                className={styles.addBtn}
-              >
-                + Add
-              </div>
-              <div
-                onClick={() => HandleFormUpload()}
-                className={styles.submitBtn}
-              >
-                upload Form and copylink
-              </div>
-              <div>
-                <ClockInput setdatetime={setActivate} />
-                <ClockInput setdatetime={setDeactivate} />
-              </div>
-            </div>
-          </>
-        ) : (
-          <ResponsePage formid={formids} />
+          return React.cloneElement(comps[10], {
+            onClick: () => {
+              Handlecompclick(idx);
+            },
+            isactive: { isactive },
+            key: item.itemid,
+            data: item,
+            itemid: item.itemid,
+            HandleDelete: HandleDeleteElement,
+          });
+        })}
+        {!qnArraymain.length && (
+          <div className="divs">
+            <h1>welldone idiot</h1>
+          </div>
         )}
+        <div>
+          <Snackbaralert
+            setIsOpen={setIsOpen}
+            isOpen={isOpen}
+            type={type}
+            message={message}
+          />
+        </div>
+        <div className={styles.BtnContainer}>
+          <div>
+            <div
+              onClick={() => (
+                SetEleId((prev) => prev + 1), handleFormElements(eleId)
+              )}
+              className={styles.addBtn}
+            >
+              + Add
+            </div>
+            <div
+              onClick={() => HandleFormUpload()}
+              className={styles.submitBtn}
+            >
+              upload Form and copylink
+            </div>
+          </div>
+          <div>
+            <ClockInput
+              label={"Set Start Time"}
+              sx={{ backgroundColor: "white" }}
+              setdatetime={setActivate}
+            />
+
+            <ClockInput label={"Set Expiry Time"} setdatetime={setDeactivate} />
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

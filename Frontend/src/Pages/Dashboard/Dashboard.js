@@ -69,7 +69,7 @@ const Dashboard = () => {
               />
             </Link>
           </div>
-          {formsArray.map((item) => {
+          {formsArray?.map((item) => {
             return (
               <div className={styles.formCard}>
                 <Link

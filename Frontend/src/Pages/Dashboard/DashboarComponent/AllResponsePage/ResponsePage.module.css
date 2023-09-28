@@ -6,6 +6,7 @@
     justify-content: center;
     background-color: hwb(0 100% 0%);
     padding-bottom: 100px;
+    box-shadow: -2px -3px 3px 3px rgb(30, 31, 33)
 
 
     /* padding:5px */
@@ -27,7 +28,7 @@
     align-items: center;
     background-color: hwb(162 67% 0%);
 
-    border: 2px solid hwb(0 63% 37%);
+    /* border: 2px solid hwb(0 63% 37%); */
     ;
 
 }
@@ -43,12 +44,19 @@
     justify-content: space-around;
     align-items: center;
     z-index: 1;
+    box-shadow: 0px 1px 4px 3px rgba(27, 28, 29, 0.455);
 
 }
 
 .leftBox {
     height: 100%;
     width: 33.33%;
+    display: flex;
+    align-items: center;
+    font-size: x-large;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 50px;
 }
 
 .mdlBtns {
@@ -65,8 +73,50 @@
     width: 33.33%;
 }
 
-.Btn {
+/* .Btn {
     margin: 5px;
+    padding: 5px;
     bottom: 0;
     cursor:pointer
+    inherit
+} */
+
+.activeLink {
+
+    font-size: larger;
+    text-decoration: none;
+    font-weight: 600;
+
+    color: rgb(130, 36, 156);
+
+    padding: 4px;
+
+    border-bottom: 4px solid transparent;
+
+    transition: border-bottom-color 0.3s ease;
+
+    border-bottom-color: green;
+
+
 }
+
+.normalLink{
+
+            font-size: larger;
+        
+            text-decoration: none;
+            
+            color: blue;
+
+            padding: 4px;
+            
+            border-bottom: 4px solid transparent;
+            
+            transition: border-bottom-color 0.3s ease;
+            
+        
+}
+        .normalLink:hover {
+            border-bottom-color: green;
+            /* Change the underline color on hover */
+        }

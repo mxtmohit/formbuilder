@@ -8,6 +8,8 @@ import {
   Navigate,
   Route,
   Routes,
+  useLocation,
+  useNavigate,
   useParams,
 } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -16,16 +18,28 @@ import Formpage from "../../../Formdesign/Formpage";
 import ResponseListPage from "./ResponseListPage";
 import Navbar from "../../../Formdesign/Formelements/Navbar";
 
+
 const ResponsePage = () => {
+  const viewFormState=useLocation()?.state?.viewForm
+  console.log("hellodd",viewFormState)
   const [responderList, setResponderList] = useState([]);
   const [title, setTitle] = useState();
   const [qnArraymain, setQnArraymain] = useState([]);
   const [formData, setFormData] = useState();
+  const [viewForm,setViewForm]=useState(viewFormState??true)
+  const [isAdmin,setIsAdmin]=useState(false)
   //console.log("ggggg", formid, responderList);
+
+
+  useEffect(()=>{if(viewFormState!=undefined)setViewForm(()=>viewFormState)},[viewFormState])
 
   const { formid } = useParams();
 
   const { token } = useSelector((state) => state.userSlice);
+
+  
+//  console.log(navigate)
+  
 
   const config = {
     headers: {
@@ -52,13 +66,14 @@ const ResponsePage = () => {
       );
       // console.log(res.data);
       // console.log("hello",res.data.formData);
-
+        if(res.status==200){
       setFormData(res.data.formData);
 
       const { title, qnData } = res.data.formData;
-      //setIsAdmin(res.data.isAdmin);
+      setIsAdmin(res.data.isAdmin);
       setTitle(title);
       setQnArraymain(qnData);
+        }
 
       // setFormData(res.)
     } catch (error) {
@@ -88,41 +103,45 @@ const ResponsePage = () => {
     HandleFetchForm();
   }, []);
   let isClicked = true;
+  const date = new Date(formData?.created_at);
+  console.log("checkdd",formData)
   return (
     <>
       <div className={s.main1}>
-        <div className={s.leftBox}></div>
+        <div className={s.leftBox}>{isAdmin && formData?.title?.title}</div>
         <div className={s.mdlBtns}>
-          <Link
+          <NavLink
             to={`/dashboard/editviewform/${formid}`}
-              state={{ responseData: responderList }}
-    
+            className={({ isActive }) =>
+              isActive ? s.activeLink : s.normalLink
+            }
+            state={{ viewForm: true }}
+            // state={{ responseData: responderList }}
           >
             Questions
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to={`/dashboard/viewresponses/${formid}`}
-          
+            className={({ isActive }) =>
+              isActive ? s.activeLink : s.normalLink
+            }
+            state={{ viewForm: false }}
+
             // state={[{ formid1: formid }, { responseData1: responderList }]}
           >
             Responses
-          </Link>
+          </NavLink>
         </div>
-        <div className={s.rightBox}>title</div>
+        
+        <div className={s.rightBox}>{isAdmin && date.toLocaleString('en-IN')}</div>
       </div>
-
-      <Routes>
-        <>
-          <Route
-            path={`/dashboard/editviewform/:formid`}
-            element={<Formpage />}
-          />
-          <Route
-            path={`/dashboard/viewresponses/:formid`}
-            element={<ResponseListPage />}
-          ></Route>
-        </>
-      </Routes>
+      <div>
+        {viewForm && formData && isAdmin ? (
+          <Formpage formid1={formData?._id} qnArraymain1={formData?.qnData} titleobj1={formData?.title} />
+        ) : (
+          <ResponseListPage responseData={responderList} />
+        )}
+      </div>
     </>
   );
 };

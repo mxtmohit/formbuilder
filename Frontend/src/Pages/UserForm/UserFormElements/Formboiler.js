@@ -34,8 +34,10 @@ const Formboiler = ({
   const [optionResponse, setOptionResponse] = useState();
   const [itemidstate, setItemIdstate] = useState(itemid);
 
-  const [textResponse, setTextResponse] = useState(response1[Object.keys(response1)[0]]??"");
-
+  const [textResponse, setTextResponse] = useState(
+   response1 ? response1[Object.keys(response1)[0]] : ""
+  );
+console.log("response1",response1)
   
 
   useEffect(() => {
@@ -74,6 +76,7 @@ const Formboiler = ({
   const optiontype = (qnOpType,res) => {
     switch (qnOpType) {
       case 0: {
+        
         return (
           <div className={styles.inputndd}>
             <div className={styles.Qn}>
@@ -115,13 +118,23 @@ const Formboiler = ({
   };
 
   return (
-    <div onClick={onClick} onMouseLeave={()=>{setOptionResponseObject({ [data._id]: optionResponse ?? textResponse })}} className={styles.Formcomps}>
+    <div
+      onClick={onClick}
+      onMouseLeave={() => {
+        setOptionResponseObject({ [data._id]: optionResponse ?? textResponse });
+      }}
+      className={styles.Formcomps}
+    >
       <div className={styles.inputndd}>
         <div className={styles.qnInput}>
           <div className={styles.Qn}>{qnValue}</div>
         </div>
       </div>
-      {optiontype(qnOptionType,response1[Object.keys(response1)[0]])}
+      {/* {optiontype(qnOptionType,response1?response1[Object.keys(response1)[0]]:"")} */}
+      {optiontype(
+        qnOptionType,
+        response1 ?? undefined
+      )}
 
       {/* <div className={styles.radioBtn}>
         <Radiobuttons />

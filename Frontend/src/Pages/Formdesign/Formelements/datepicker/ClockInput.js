@@ -5,7 +5,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
-export default function ClockInput({setdatetime}) {
+export default function ClockInput({setdatetime,label}) {
   const [value, setValue] = React.useState(dayjs(""));
 
   const handlereset=()=>{
@@ -17,8 +17,8 @@ export default function ClockInput({setdatetime}) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
       
-        <DateTimePicker
-         
+        <DateTimePicker sx={{backgroundColor:"white",color:"black"}}
+         label={label}
           value={value}
           onChange={(newValue) => {setValue(()=>newValue);setdatetime(()=>value)}}
         />
