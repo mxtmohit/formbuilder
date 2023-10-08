@@ -2,7 +2,7 @@
 
 * Form Creation: Users can easily create custom forms by adding different types of form elements such as text fields, multiple-choice questions, checkboxes, and more.
 
-* Form Sharing: Share your created forms with others by generating a unique link or QR code, making it easy to distribute surveys, quizzes, or feedback forms.
+* Form Sharing: Share your created forms with others by generating a unique link, making it easy to distribute surveys, quizzes, or feedback forms.
 
 * Submission Collection: Users can fill out and submit forms created by others, providing valuable responses and data.
 
