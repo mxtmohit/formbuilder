@@ -13,14 +13,11 @@ const COmp = () => {
 
   ar.sort((a,v)=>new Date(v.date) - new Date(a.date))
 
-  console.log(ar)
+  
 
   const currentDate = new Date();
 
-  console.log(
-    Math.floor(currentDate)
-  );
-
+ 
   let istitletoday = true;
   let istitle7 = true;
   let istitle30 = true;
@@ -57,7 +54,7 @@ const COmp = () => {
           comp30 = true;
           comp7 = false;
         }
-        console.log(istitle7);
+    
         return (
           // <>
           //   {days < 1 && days > 0 && (

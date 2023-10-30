@@ -25,18 +25,18 @@ const TitleBar = ({ setTitleobj, data }) => {
       <div className={styles.Title}>
         <Input
           sx={{ fontSize: "2rem" }}
-          onChange={(event) => (setTitle(event.target.value))}
+          value={title}
+          onChange={(event) => setTitle(()=>event.target.value)}
           placeholder="Title"
           fullWidth
-          value={title}
         />
       </div>
       <div className={styles.Description}>
         <Input
-          onChange={(event) => setDescription(event.target.value)}
+          value={description}
+          onChange={(event) => setDescription(()=>event.target.value)}
           placeholder="Description"
           fullWidth
-          value={description}
         />
       </div>
     </div>

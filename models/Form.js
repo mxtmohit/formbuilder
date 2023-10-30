@@ -26,11 +26,13 @@ const titleSchema = new mongoose.Schema({
 
 const formSchema = mongoose.Schema(
   [
-    {title: titleSchema},
-    {qnData: [qnSchema]},
-    {user: {type: String,required:true}},
-    {starttime: { type: Date }},
-    {endtime: { type: Date }},
+    { title: titleSchema },
+    { qnData: [qnSchema] },
+    { user: { type: String, required: true } },
+    {
+      starttime: { type: Date },
+    },
+    { endtime: { type: Date } },
   ],
 
   {

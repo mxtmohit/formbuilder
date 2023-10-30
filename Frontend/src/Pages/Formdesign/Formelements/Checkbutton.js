@@ -72,7 +72,7 @@ const CheckButton = ({ setoptionvalueArray,data }) => {
 
   useEffect(() => {
     setoptionvalueArray(checkOptions);
-    console.log(checkOptions);
+  
   }, [checkOptions]);
 
   return (

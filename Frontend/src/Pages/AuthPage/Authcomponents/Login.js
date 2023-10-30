@@ -23,24 +23,36 @@ const Login = ({authType}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {token} = useSelector((state)=>state.userSlice);
-  const { formid } = useParams("");
+  const { formid } = useParams();
   
 
   
   
   const handleLogin=async()=>{
+
+     
     try{
-    const res = await axios.post("http://localhost:5000/auth/login", {
+    const res = await axios.post("/auth/login", {
       email,
       password,token
     });
-      console.log(res.data)
+     
       dispatch(loginAction(res.data))
        if(formid)navigate(`/form/:${formid}`);
        else navigate("/dashboard")
     }catch(e){
-      console.log("user not found")
-    }
+      }
+      //  const previousUrl = sessionStorage.getItem("previousUrl");
+    
+      //  if (previousUrl) {
+      //    // Clear the previous URL from sessionStorage
+      //   //  sessionStorage.removeItem("previousUrl");
+
+      //    // Redirect to the previous URL
+      //    window.location.href = previousUrl;
+      //  }
+
+    
   }
 
  

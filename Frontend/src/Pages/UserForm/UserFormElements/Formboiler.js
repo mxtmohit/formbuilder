@@ -37,7 +37,7 @@ const Formboiler = ({
   const [textResponse, setTextResponse] = useState(
    response1 ? response1[Object.keys(response1)[0]] : ""
   );
-console.log("response1",response1)
+
   
 
   useEffect(() => {

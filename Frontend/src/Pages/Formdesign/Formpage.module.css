@@ -135,4 +135,5 @@ border-radius: 10px;
 .wrapper{
     height: fit-content;
     background-color: blueviolet;
+    min-width: 100vw;
 }}

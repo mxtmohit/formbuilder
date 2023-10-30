@@ -15,6 +15,8 @@ const FormResponse = require("./models/FormResponse");
 
 app.use(cors());
 
+const PORT = process.env.PORT || 5000;
+
 // app.get("/", (req, res) => {
 //   res.send("Hello, World!");
 // });
@@ -27,7 +29,7 @@ app.post("/auth/signup", async (req, res) => {
   const { email, password } = req.body;
   const fname = req.body.firstname;
   const lname = req.body.lastname;
-  console.log(req.body)
+  //console.log(req.body)
 
   try {
     if (await User.findOne({ email })) {
@@ -41,12 +43,12 @@ app.post("/auth/signup", async (req, res) => {
         { expiresIn: "24h" } // Token expiration time
       );
 
-      return res.status(200).json({message: "account created successfully" , user, token });
-    
-    
+      return res
+        .status(200)
+        .json({ message: "account created successfully", user, token });
     }
   } catch (e) {
-    console.log(e.message);
+    // console.log(e.message);
     return res.json({
       message: "could not create your account try again later",
     });
@@ -91,7 +93,35 @@ app.get("/form/:formid", verifytoken, async (req, res) => {
     const requser = req.user.username;
     const resuser = formData.user;
     const isAdmin = requser == resuser;
-    res.status(200).json({ formData, isAdmin });
+
+    const timestart = formData.starttime;
+    const timeend = formData.endtime;
+
+ 
+    if (isAdmin)
+      return res
+        .status(200)
+        .json({
+          formData,
+          isAdmin,
+          message: "apne hi to form banaya hai apko nhi to kisko bhejunga",
+        });
+
+  
+
+    if (timestart < new Date() && new Date() < timeend) {
+     
+
+      return res.status(200).json({ formData, isAdmin });
+    } else if (timestart > Date.now()) {
+      return res
+        .status(201)
+        .json({
+          message: "form is not available yet",
+          timestart: Math.floor(timestart - Date.now()),
+          isalive: true,
+        });
+    } else return res.status(201).json({ message: "form is ixpired", timeend });
   } catch (e) {
     console.log(e.message);
     res.status(404).json({ message: "form not available or invalid form" });
@@ -101,12 +131,19 @@ app.get("/form/:formid", verifytoken, async (req, res) => {
 
 app.post("/createform", verifytoken, async (req, res) => {
   let formData = req.body.formData;
-  console.log("formid=",req.body.formid);
+  // console.log("formid=",req.body.formid);
   if (req.body.formid) {
     try {
       await Form.updateOne(
         { _id: req.body.formid }, // Query to find the document(s) to update
-        { $set: { qnData: formData.qnData, title: formData.title } } // Update operation
+        {
+          $set: {
+            qnData: formData.qnData,
+            title: formData.title,
+            starttime: formData.starttime,
+            endtime: formData.endtime,
+          },
+        } // Update operation
       );
       // const newform = new Form(formData);
       // const formids = await Form.findOne({ "title._id": req.body.formid });
@@ -117,7 +154,7 @@ app.post("/createform", verifytoken, async (req, res) => {
 
       return res.status(202).json({ id, message: "Form updated" });
     } catch (e) {
-      console.error("catch:", e);
+    
       return res
         .status(500)
         .json({ message: "Unable to create form. Please try later." });
@@ -145,7 +182,7 @@ app.get("/getforms", verifytoken, async (req, res) => {
     const forms = await Form.find({ user: user });
     return res.json({ forms });
   } catch (e) {
-    console.log(e.message);
+    
     return res.json({ message: "couldn send any form, server error" });
   }
 });
@@ -167,21 +204,32 @@ app.post("/form/submit", verifytoken, async (req, res) => {
 });
 
 app.get("/getresponse/:formid", verifytoken, async (req, res) => {
-  console.log(req.params)
-  const {formid} = req.params;
+  
+  const { formid } = req.params;
   const user = req.user.username;
   try {
-    const form = await Form.findOne({ _id: formid,user:user });
+    const form = await Form.findOne({ _id: formid, user: user });
     // console.log(form)
-    if(form)
-      {
-        const allresponses=await FormResponse.find({formid:form._id})
-        return res.status(200).json({allresponses,message:"success"})
-      }
-      else{
-        console.log("no form found")
-      }
-  } catch(e) {console.log(e.message)}
+    if (form) {
+      const allresponses = await FormResponse.find({ formid: form._id });
+      return res.status(200).json({ allresponses, message: "success" });
+    } else {
+     
+    }
+  } catch (e) {
+   
+  }
+});
+
+app.use(express.static(path.join(__dirname, "./Frontend/build")));
+
+app.get("*", function (_, res) {
+  res.sendFile(
+    path.join(__dirname, "./Frontend/build/index.html"),
+    function (err) {
+      res.status(500).send(err);
+    }
+  );
 });
 
 app.listen(5000, () => {

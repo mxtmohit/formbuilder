@@ -12,6 +12,7 @@ import Snackbaralert from "../../Formdesign/Formelements/shared/Snackbaralert";
 
 let i = 0;
 const UserFormpage = ({ responseData1 }) => {
+  sessionStorage.setItem("previousUrl", window.location.href);
   const { formid } = useParams();
   const navigate = useNavigate();
   const location = window.location.pathname;
@@ -33,15 +34,14 @@ const UserFormpage = ({ responseData1 }) => {
   //.log("response", formResponseArray);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedtype, setSelectType] = useState(0);
-  const [titleobj, setTitle] = useState(
-    //JSON.parse(localStorage.getItem("usermaintitle")) ?? {}
-  );
+  const [titleobj, setTitle] = useState();
+  //JSON.parse(localStorage.getItem("usermaintitle")) ?? {}
   const [qnArray, setQnArray] = useState({});
   const [formData, setFormData] = useState({});
-  const [qnArraymain, setQnArraymain] = useState(
-   // JSON.parse(localStorage.getItem("usermainarray")) ?? [{ itemid: 0 }]
-  );
+  const [qnArraymain, setQnArraymain] = useState();
+  // JSON.parse(localStorage.getItem("usermainarray")) ?? [{ itemid: 0 }]
   const [clicked, setclicked] = useState(0);
+  const [countdown, setCountdown] = useState(0);
 
   const { email, token } = useSelector((state) => state.userSlice);
 
@@ -53,6 +53,14 @@ const UserFormpage = ({ responseData1 }) => {
   let updatedcomps;
 
   let flag = true;
+  let cnt=countdown
+  const interval = setInterval(() => {
+    if (countdown > 0){ cnt=cnt-1;setCountdown(cnt); }
+    if (countdown == 0) {
+      clearInterval(interval);
+      HandleFetchForm()
+    }
+  }, 1000);
 
   useEffect(() => {
     ////.log(Object.keys(optionResponseObject)[0]);
@@ -149,9 +157,12 @@ const UserFormpage = ({ responseData1 }) => {
   ]);
 
   useEffect(() => {
+  
     HandleFetchForm();
   }, []);
+  
   const HandleFetchForm = async () => {
+  
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -161,22 +172,35 @@ const UserFormpage = ({ responseData1 }) => {
 
     try {
       const res = await axios.get(
-        `http://localhost:5000/form/${formid}`,
+        `/form/${formid}`,
         config
       );
-       if(res.status==200) {
-      setFormData(res.data.formData);
-        console.log("isAdmin",isAdmin)
-      const { title, qnData } = res.data.formData;
-      setIsAdmin(res.data.isAdmin);
-      setTitle(title);
-      setQnArraymain(qnData);
-       }
+      if (res.status == 200) {
+        setFormData(res.data.formData);
+       
+        const { title, qnData } = res.data.formData;
+        setIsAdmin(res.data.isAdmin);
+        setTitle(title);
+        setQnArraymain(qnData);
 
+      } else if (res.status == 201 && res?.data?.isalive) {
+
+       
+        setCountdown(Math.floor((res.data.timestart) / 1000));
+
+      } else {
+        setIsOpen(true);
+        setType("info");
+        setmessage("form has expired");
+      }
+    
       // setFormData(res.)
     } catch (error) {
       //.log("coudnt submit my bad");
+     
+
       navigate("/auth");
+
       setTitle({});
       setQnArraymain([]);
     }
@@ -184,18 +208,16 @@ const UserFormpage = ({ responseData1 }) => {
 
   const HandleFormUpload = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/form/submit", {
+      const res = await axios.post("/form/submit", {
         formid,
         responseData: formResponseArray,
         token,
-        
       });
 
-      if(res.status==200)
-      {
-        setmessage("Form Submitted Successfully")
-        setType("success")
-        setIsOpen(true)
+      if (res.status == 200) {
+        setmessage("Form Submitted Successfully");
+        setType("success");
+        setIsOpen(true);
       }
     } catch (error) {
       //.log("coudnt submit my bad");
@@ -219,20 +241,19 @@ const UserFormpage = ({ responseData1 }) => {
       return result;
     }, {});
   }
-  console.log("userResponsecx",titleobj);
+  //console.log("userResponsecx", titleobj);
   return (
     <>
-      
-          <div className={styles.main}>
-            <div className={styles.wrapper}>
-              {/* {formData &&<h1>bsdk jwt ka neta mat bann</h1> } */}
-              <TitleBar data={titleobj} />
-              {qnArraymain?.length>0 && qnArraymain.map((item, idx) => {
-                console.log(
-                  "item._id",
-                  item._id,
-                  userResponsemerged ? userResponsemerged[item._id] : ""
-                );
+      {countdown > 0 ? (
+        <h1>{countdown}</h1>
+      ) : (
+        <div className={styles.main}>
+          <div className={styles.wrapper}>
+            {/* {formData &&<h1>bsdk jwt ka neta mat bann</h1> } */}
+            <TitleBar data={titleobj} />
+            {qnArraymain?.length > 0 &&
+              qnArraymain.map((item, idx) => {
+                
                 let a = userResponsemerged ? userResponsemerged[item._id] : "";
                 return React.cloneElement(comps[10], {
                   key: item.itemid,
@@ -242,28 +263,26 @@ const UserFormpage = ({ responseData1 }) => {
                   response1: a,
                 });
               })}
-            </div>
-            {!userResponse && (
-              <div className={styles.BtnContainer}>
-                <div
-                  onClick={() => HandleFormUpload()}
-                  className={styles.submitBtn}
-                >
-                  upload Form
-                </div>
-              </div>
-            )}
-            <Snackbaralert
-              setIsOpen={setIsOpen}
-              isOpen={isOpen}
-              type={type}
-              message={message}
-            />
           </div>
-          {/* </>)} */}
-        </>
-      
-    
+          {userResponse && (
+            <div className={styles.BtnContainer}>
+              <div
+                onClick={() => HandleFormUpload()}
+                className={styles.submitBtn}
+              >
+                upload Form
+              </div>
+            </div>
+          )}
+          <Snackbaralert
+            setIsOpen={setIsOpen}
+            isOpen={isOpen}
+            type={type}
+            message={message}
+          />
+        </div>
+      )}
+    </>
   );
 };
 

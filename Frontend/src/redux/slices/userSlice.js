@@ -13,12 +13,12 @@ if(userdetail)
 initialState = userdetail
 
 const login = (state, {payload}) => {
-    console.log("hello")
+    
   state.fname = payload.user.firstname
     state.lname = payload.user.lastname
     state.email = payload.user.email
     state.token = payload.token
-    console.log(state)
+   
     
     localStorage.setItem("userDetail", JSON.stringify(state));
     

@@ -20,11 +20,11 @@ const Signup = ({ authType }) => {
   const { token } = useSelector((state) => state.userSlice);
 
   const HandleSignup = async (event) => {
-    console.log("signup try")
+    
     try {
       const userdata = await axios({
         method: "post",
-        url: "http://localhost:5000/auth/signup",
+        url: "/auth/signup",
         data: { firstname, lastname , email, password},
       });
 
@@ -34,7 +34,7 @@ const Signup = ({ authType }) => {
 
       dispatch(loginAction(userdata.data));
     } catch (e) {
-      console.log(e);
+     
     }
   };
 

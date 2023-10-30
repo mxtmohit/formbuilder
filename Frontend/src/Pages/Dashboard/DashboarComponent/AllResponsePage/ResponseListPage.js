@@ -38,21 +38,21 @@ const ResponseListPage = () => {
   const fetchResponses = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/getresponse/${formid}`,
+        `/getresponse/${formid}`,
         config
       );
       if (res.status == 200) {
         setResponderList(res.data.allresponses);
       }
     } catch (e) {
-      console.log(e);
+     
     }
   };
 
   useEffect(() => {
     fetchResponses();
   }, []);
-console.log("hellovv",responderList)
+
   return (
     <>
       <div className={s.main}>

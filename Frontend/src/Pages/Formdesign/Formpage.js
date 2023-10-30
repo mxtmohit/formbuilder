@@ -13,18 +13,18 @@ import ResponsePage from "../Dashboard/DashboarComponent/AllResponsePage/Respons
 import { useLocation } from "react-router-dom";
 
 let i = 0;
-const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
-  console.log("formdata values", formDataValues);
+const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues,starttime,endtime }) => {
+  //console.log("formdata values", formDataValues);
   const location = useLocation();
   // const [formState,setFormState]=useState()
   const formState = formDataValues;
-  console.log("sss", formState);
+//console.log("sss", formState);
   const [selectedtype, setSelectType] = useState(0);
   const [titleobj, setTitle] = useState(
     // formState.title.title
     titleobj1 ?? JSON.parse(localStorage.getItem("maintitle")) ?? {}
   );
-  console.log("dsdsd", formState?.title);
+  //console.log("dsdsd", formState?.title);
 
   const [message, setmessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +43,10 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
       JSON.parse(localStorage.getItem("mainarray")) ?? [{ itemid: 0 }]
   );
 
+    const [fieldsEmpty,setFieldsEmpty]=useState(true)
+    let timestart
+    let timeend
+
   const [clicked, setclicked] = useState(0);
   // console.log(qnArraymain1)
   const [eleId, SetEleId] = useState(
@@ -56,20 +60,20 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
 
   //console.log("ggdd", formState);
 
-  console.log("qnarray", qnArray);
+ // console.log("qnarray", qnArray);
   if (JSON.parse(localStorage.getItem("mainarray")))
     i = JSON.parse(localStorage.getItem("mainarray"))?.length;
 
   let updatedcomps;
 
   const [formid, setFormid] = useState(formid1);
-  console.log("titleid", formid);
+ // console.log("titleid", formid);
   let flag = true;
 
   const updateMainArray = (updatedarray) => {
     setQnArraymain(() => updatedarray);
   };
-  console.log(formData);
+//console.log(formData);
 
   useEffect(() => {
     setFormData({ title: titleobj, qnData: qnArraymain, user: email });
@@ -81,7 +85,7 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
     }
   }, [qnArraymain, titleobj, Activate, deActivate]);
 
-  console.log(formData);
+  //console.log(formData);
 
   const handleaddclickmain = () => {
     updatedcomps = qnArraymain.map((item) => {
@@ -100,13 +104,13 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
   };
 
   useEffect(() => {
-    console.log(qnArray?.options?.optionarray);
+   // console.log(qnArray?.options?.optionarray);
     if (
       qnArray?.Qntext ||
       qnArray?.Qntext == "" ||
       qnArray?.Options?.optionarray
     ) {
-      console.log("usefeect worked2", qnArray);
+     // console.log("usefeect worked2", qnArray);
       handleaddclickmain();
     }
   }, [qnArray]);
@@ -122,7 +126,7 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
   const Handlecompclick = (idx) => {
     setCompActiveIndex(idx);
   };
-  console.log();
+ // console.log();
 
   const comps = {
     10: (
@@ -140,7 +144,7 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
   };
 
   const HandleDeleteElement = (id) => {
-    console.log("clicked id: ", id);
+//console.log("clicked id: ", id);
     const updatedMainArray = qnArraymain.filter((item) => {
       return item.itemid !== id;
     });
@@ -154,7 +158,7 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
       localStorage.setItem("mainarray", JSON.stringify(qnArraymain));
     localStorage.setItem("maintitle", JSON.stringify(titleobj));
     }
-    return keys.forEach((item)=>localStorage.removeItem(item))
+    
 
 
     
@@ -175,7 +179,7 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
 
   const handleFormElements = (k) => {
     setQnArraymain([...qnArraymain, { itemid: k }]);
-    console.log(i);
+   // console.log(i);
     setFormelements((prev) => [
       ...prev,
       {
@@ -196,14 +200,18 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
   let isactive = true;
 
   const HandleFormUpload = async () => {
+
+    // console.log("check",fieldsEmpty)
+    if(!fieldsEmpty && titleobj.title){
     try {
       setType("info");
       setIsOpen(true);
-      const res = await axios.post("http://localhost:5000/createform ", {
+      const res = await axios.post("/createform ", {
         formData,
         token,
         formid,
       });
+      //alert(formData)
       // console.log(res.data.me)
       if (res.status == 200) {
         setIsOpen(true);
@@ -212,22 +220,33 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
         setType("success");
         setmessage(
           "Form Successfully Uploaded and Link copied to the ClipBoard"
+
         );
+
+        // console.log("ttff", res.data);
+        // timestart = res.data.starttime;
+        // timeend = res.data.endtime;
       } else if (res.status == 202) {
         setIsOpen(true);
 
         navigator.clipboard.writeText(
-          `http://localhost:3000/form/${res.data.id}`
+          `/form/${res.data.id}`
         );
         setType("success");
         setmessage(res.data.message);
       }
+      
     } catch (error) {
-      console.log("coudnt submit my bad");
+     // console.log("couldnt submit my bad");
       setIsOpen(true);
       setType("error");
       setmessage("something went wrong try gain later");
     }
+  }else{
+    setIsOpen(true);
+    setType("error");
+    setmessage("please make sure that no fields are empty");
+  }
   };
 
   return (
@@ -246,6 +265,7 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
             data: item,
             itemid: item.itemid,
             HandleDelete: HandleDeleteElement,
+            setFieldsEmpty:setFieldsEmpty
           });
         })}
         {!qnArraymain.length && (
@@ -283,9 +303,9 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues }) => {
               label={"Set Start Time"}
               sx={{ backgroundColor: "white" }}
               setdatetime={setActivate}
-            />
-
-            <ClockInput label={"Set Expiry Time"} setdatetime={setDeactivate} />
+              time={timestart}
+            />{console.log("dd",timeend)}
+            <ClockInput label={"Set Expiry Time"} setdatetime={setDeactivate} time={endtime} />
           </div>
         </div>
       </div>

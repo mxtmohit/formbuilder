@@ -78,7 +78,7 @@ const Radiobuttons = ({ setoptionvalueArray, data }) => {
 
   useEffect(() => {
     setoptionvalueArray(radioOptions);
-    console.log(radioOptions);
+  
   }, [radioOptions]);
 
   return (

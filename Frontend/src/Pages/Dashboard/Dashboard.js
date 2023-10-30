@@ -40,9 +40,9 @@ const Dashboard = () => {
         );
 
         setFormsArray(res.data.forms);
-        console.log(res.data);
+       
       } catch (e) {
-        console.log("server error", e);
+       
         if (e.response?.status == 401) {
           dispatch(logoutAction());
           navigate("/auth");
