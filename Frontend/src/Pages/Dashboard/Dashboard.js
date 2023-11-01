@@ -21,6 +21,10 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const checkuser=useSelector((s)=>s.userSlice.token)
+
+  
+
 
 
   const config = {
@@ -32,6 +36,12 @@ const Dashboard = () => {
 
 
   useEffect(() => {
+
+    if (!checkuser) {
+      console.log(checkuser);
+      navigate("/auth");
+    }
+    
     const fetchForms = async () => {
       try {
         const res = await axios.get(

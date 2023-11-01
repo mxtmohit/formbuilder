@@ -43,7 +43,7 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues,starttime,e
       JSON.parse(localStorage.getItem("mainarray")) ?? [{ itemid: 0 }]
   );
 
-    const [fieldsEmpty,setFieldsEmpty]=useState(true)
+    const [fieldsEmpty,setFieldsEmpty]=useState(false)
     let timestart
     let timeend
 
