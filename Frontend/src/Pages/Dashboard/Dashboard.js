@@ -45,7 +45,7 @@ const Dashboard = () => {
     const fetchForms = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/getforms`,
+          `/getforms`,
           config
         );
 

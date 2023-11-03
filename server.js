@@ -86,6 +86,8 @@ app.post("/auth/login", async (req, res) => {
 });
 
 app.get("/form/:formid", verifytoken, async (req, res) => {
+
+  
   const formid = req.params?.formid;
   // const formIdToCompare = new Types.ObjectId(formid);
 
@@ -113,7 +115,7 @@ app.get("/form/:formid", verifytoken, async (req, res) => {
     if (timestart < new Date() && new Date() < timeend) {
      
 
-      return res.status(200).json({ formData, isAdmin });
+      return res.status(200).json({ formData, isAdmin,message:"cant" });
     } else if (timestart > Date.now()) {
       return res
         .status(201)
@@ -224,7 +226,7 @@ app.get("/getresponse/:formid", verifytoken, async (req, res) => {
 
 app.use(express.static(path.join(__dirname, "./Frontend/build")));
 
-app.get("*", function (_, res) {
+app.get("/", function (_, res) {
   res.sendFile(
     path.join(__dirname, "./Frontend/build/index.html"),
     function (err) {

@@ -29,12 +29,14 @@ const Login = ({authType}) => {
   
   
   const handleLogin=async()=>{
-
-     
+    if(token)
+      navigate('/dashboard')
+    
     try{
-    const res = await axios.post("/auth/login", {
+    const res = await axios.post("http://localhost:5000/auth/login", {
       email,
-      password,token
+      password,
+      token,
     });
      
       dispatch(loginAction(res.data))

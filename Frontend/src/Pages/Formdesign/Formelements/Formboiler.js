@@ -35,7 +35,7 @@ const Formboiler = ({
   //console.log("itemdid", itemid);
 
   const handleCheckFieldsEmpty = () => {
-    if (qnValue && (qnOptionType ? optionValueArray.length : true))
+    if (qnValue && (qnOptionType ? optionValueArray?.length : true))
     {
       setFieldsEmpty(false) }
     else {setFieldsEmpty(true)}

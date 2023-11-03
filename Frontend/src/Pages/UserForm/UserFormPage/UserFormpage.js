@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "./UserFormpage.module.css";
-import { MenuItem, Select, TextField } from "@mui/material";
+import { MenuItem, Select, TextField, colors } from "@mui/material";
 import Formboiler from "../UserFormElements/Formboiler";
 import TitleBar from "../UserFormElements/TitleBar";
 import axios from "axios";
@@ -45,6 +45,8 @@ const UserFormpage = ({ responseData1 }) => {
 
   const { email, token } = useSelector((state) => state.userSlice);
 
+  
+
   if (!token) navigate(`/auth/${formid}`);
 
   //if (JSON.parse(localStorage.getItem("usermainarray")))
@@ -54,13 +56,14 @@ const UserFormpage = ({ responseData1 }) => {
 
   let flag = true;
   let cnt=countdown
-  const interval = setInterval(() => {
-    if (countdown > 0){ cnt=cnt-1;setCountdown(cnt); }
-    if (countdown == 0) {
-      clearInterval(interval);
-      HandleFetchForm()
-    }
-  }, 1000);
+  // const interval = setInterval(() => {
+  //   if (countdown > 0){ cnt=cnt-1;setCountdown(()=>cnt); }
+  //   if (countdown === 0) {
+  //     clearInterval(interval);
+      
+  //     HandleFetchForm()
+  //   }
+  // }, 1000);
 
   useEffect(() => {
     ////.log(Object.keys(optionResponseObject)[0]);
@@ -137,11 +140,11 @@ const UserFormpage = ({ responseData1 }) => {
     ),
   };
 
-  useEffect(() => {
-    if (qnArraymain)
-      localStorage.setItem("usermainarray", JSON.stringify(qnArraymain));
-    localStorage.setItem("usermaintitle", JSON.stringify(titleobj));
-  }, [qnArraymain, titleobj]);
+  // useEffect(() => {
+  //   if (qnArraymain)
+  //     localStorage.setItem("usermainarray", JSON.stringify(qnArraymain));
+  //   localStorage.setItem("usermaintitle", JSON.stringify(titleobj));
+  // }, [qnArraymain, titleobj]);
 
   const [Formelements, setFormelements] = useState([
     {
@@ -156,19 +159,24 @@ const UserFormpage = ({ responseData1 }) => {
     },
   ]);
 
-  useEffect(() => {
   
+
+  useEffect(() => {
+
     HandleFetchForm();
   }, []);
+
+
   
   const HandleFetchForm = async () => {
-  
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        // You can add other headers here if needed
-      },
-    };
+    
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // You can add other headers here if needed
+        },
+      };
+    
 
     try {
       const res = await axios.get(
@@ -177,8 +185,8 @@ const UserFormpage = ({ responseData1 }) => {
       );
       if (res.status == 200) {
         setFormData(res.data.formData);
-       
-        const { title, qnData } = res.data.formData;
+
+        const { title, qnData } = res?.data?.formData;
         setIsAdmin(res.data.isAdmin);
         setTitle(title);
         setQnArraymain(qnData);
@@ -196,7 +204,7 @@ const UserFormpage = ({ responseData1 }) => {
     
       // setFormData(res.)
     } catch (error) {
-      //.log("coudnt submit my bad");
+      console.log(error,"coudnt submit my bad");
      
 
       navigate("/auth");

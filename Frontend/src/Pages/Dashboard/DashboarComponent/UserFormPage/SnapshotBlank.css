@@ -6,8 +6,9 @@
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    background-color: hwb(0 100% 0%);
+    background-color: #DDE6ED;
     position: relative;
+     border-radius: 10px;
 
 
     /* padding:5px */

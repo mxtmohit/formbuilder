@@ -216,7 +216,7 @@ const Formpage = ({ formid1, qnArraymain1, titleobj1, formDataValues,starttime,e
       if (res.status == 200) {
         setIsOpen(true);
         setFormid(res.data.id);
-        navigator.clipboard.writeText(`/form/${formid}`);
+        navigator.clipboard.writeText(`/form/${res.data.id}`);
         setType("success");
         setmessage(
           "Form Successfully Uploaded and Link copied to the ClipBoard"
