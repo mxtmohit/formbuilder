@@ -38,7 +38,7 @@ const Dashboard = () => {
   useEffect(() => {
 
     if (!checkuser) {
-      console.log(checkuser);
+     
       navigate("/auth");
     }
     

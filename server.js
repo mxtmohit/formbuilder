@@ -126,7 +126,7 @@ app.get("/form/:formid", verifytoken, async (req, res) => {
         });
     } else return res.status(201).json({ message: "form is ixpired", timeend });
   } catch (e) {
-    console.log(e.message);
+    
     res.status(404).json({ message: "form not available or invalid form" });
     // process.exit(0);
   }
@@ -238,5 +238,5 @@ app.get("/", function (_, res) {
 connectDB();
 
 app.listen(PORT, () => {
-  console.log("started");
+  
 });

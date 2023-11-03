@@ -33,7 +33,7 @@ const Login = ({authType}) => {
       navigate('/dashboard')
     
     try{
-    const res = await axios.post("http://localhost:5000/auth/login", {
+    const res = await axios.post("/auth/login", {
       email,
       password,
       token,

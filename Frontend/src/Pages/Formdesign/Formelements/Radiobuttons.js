@@ -70,7 +70,7 @@ const Radiobuttons = ({ setoptionvalueArray, data }) => {
     if (
       JSON.stringify(updatedradiolabelarray) != JSON.stringify(radioOptions)
     ) {
-      console.log("hello");
+      
       setRadioOptions(updatedradiolabelarray);
     }
     setRadioClickedId(-1);
