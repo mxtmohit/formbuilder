@@ -179,8 +179,8 @@ const UserFormpage = ({ responseData1 }) => {
     
 
     try {
-      const res = await axios.get(
-        `/form/${formid}`,
+      const res = await axios.post(
+        `/form/${formid}`,{token},
         config
       );
       if (res.status == 200) {

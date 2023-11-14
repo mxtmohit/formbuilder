@@ -85,7 +85,7 @@ app.post("/auth/login", async (req, res) => {
   }
 });
 
-app.get("/form/:formid", verifytoken, async (req, res) => {
+app.post("/form/:formid", verifytoken, async (req, res) => {
 
   
   const formid = req.params?.formid;
